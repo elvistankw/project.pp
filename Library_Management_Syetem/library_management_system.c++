@@ -82,8 +82,8 @@ public:
     void searchBook();
     void borrowBook();
     void returnBook();
-    void viewBorrowed();
-    void display() const override;
+    void viewBorrowed();//借着的书
+    void display() const override;//display全部书
     friend void displayUserInfo(Customer); // Friend function
     friend void viewBorrowHistory(const Customer);
 };
