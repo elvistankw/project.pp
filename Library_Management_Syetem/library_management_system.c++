@@ -91,7 +91,7 @@ public:
 };
 
 class BookRecord {
-protected:
+public:
 	//book node
     struct BookNode {
         string id;
@@ -102,12 +102,19 @@ protected:
         BookNode* next;
     };
     BookNode* head;
-public:
-    BookRecord();
-    virtual ~BookRecord();
-    void insertBook(int, string, string, int);
-    void deleteBookById(int);
-    void displayBooks();
+
+    BookRecord() : head(nullptr){};
+
+    virtual ~BookRecord()
+	{
+    	BookNode* current = head;
+	    while (current != nullptr) 
+		{
+	        BookNode* next = current->next;
+	        delete current;
+	        current = next;
+    	}
+	};
 };
 
 // ================ Derived Classes =================
@@ -402,6 +409,57 @@ public:
     cout << "Admin ID not found." << endl;
 	}
 	
+	 void removeAdmin() {
+	    if (head == nullptr) 
+		{
+	        cout << "No admins in the list to remove." << endl;
+	        return;
+	    }
+	    
+	    cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                     Delete Admin\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+		
+	    string targetID;
+	    cout << "Enter Admin ID to remove: ";
+	    getline(cin,targetID);
+	
+	    AdminNode* temp = head;
+	    AdminNode* prev = nullptr;
+	
+	    while (temp != nullptr && temp->id != targetID) 
+		{
+	        prev = temp;
+	        temp = temp->next;
+	    }
+	
+	    if (temp == nullptr) 
+		{
+	        cout << "Admin with ID " << targetID << " not found." << endl;
+	        return;
+	    }
+	
+	    if (temp == head) 
+		{
+	        head = head->next;
+	    } 
+		else 
+		{
+	        prev->next = temp->next;
+	    }
+	
+	    delete temp;
+	    cout << "Admin with ID " << targetID << " has been removed successfully." << endl;
+	}
+	
 	void saveAdminToFile() 
 	{
 		ofstream outFile("admin.txt", ios::trunc); 
@@ -420,7 +478,6 @@ public:
 		}
 	}
 
-	
 	void loadAdminsFromFile() {
 	    ifstream inFile("admin.txt");
 	    if (!inFile.is_open()) {
@@ -456,7 +513,7 @@ public:
 	    }
 	
 	    inFile.close();
-	} 
+	}
 	
 	void displayAdmin()
 	{
