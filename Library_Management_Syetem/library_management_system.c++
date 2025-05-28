@@ -171,6 +171,43 @@ public:
 	};
 	
 	Admin(string id, string name, string password, string email = "", string phone_num = "") : Person(id, name, password, email, phone_num) {}
+
+	bool adminLogin() {
+		system("cls");
+	    string inputEmail, inputPassword;
+	    
+	    cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                     Admin Login\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "Enter email: ";
+	    getline(cin,inputEmail);
+	    cout << "Enter password: ";
+	    cin >> inputPassword;
+	
+	    AdminNode* temp = head;
+	    while (temp != nullptr) {
+	        if (temp->email == inputEmail && temp->password == inputPassword) {
+	            cout << "\nLogin successful! Welcome, " << temp->name << "!" << endl;
+	            cin.ignore();
+	            cin.get();
+	            return true;
+	        }
+	        temp = temp->next;
+	    }
+	
+	    cout << "\nLogin failed. Invalid username or password.\n";
+	    cin.ignore();
+	    cin.get();
+	    return false;
+	}
     
     bool isDuplicateID(string id) 
 	{
@@ -514,11 +551,6 @@ public:
 	
 	    inFile.close();
 	}
-	
-	void displayAdmin()
-	{
-		
-	}
 
 	
     void addBook();
@@ -667,5 +699,82 @@ void mainMenu();
 // =============== Main Function ===================
 
 int main() {
+	int choice;
+	int loginType;
+	Admin admin;
+	
+	while(true){
+		system("cls");
+		cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout<< "\n____________________________________________________________________________________________________________________________________________________________\n\n\n";
+        
+        cout<<"\n                                                    |======================================================|";
+        cout<<"\n                                                    |              JR Library Management System            |";
+        cout<<"\n                                                    |======================================================|";
+        cout<<"\n                                                    |1.Signup account.                                     |";
+        cout<<"\n                                                    |                                                      |";
+        cout<<"\n                                                    |2.Login account.                                      |";
+        cout<<"\n                                                    |                                                      |";
+        cout<<"\n                                                    |3.Reset Password                                      |";
+        cout<<"\n                                                    |                                                      |";
+        cout<<"\n                                                    |4.Exit.                                               |";
+        cout<<"\n                                                    |======================================================|";
+    
+        cout<<"\n\n                                                    Please Enter Your Option : ";
+        cin>>choice;
+        cin.ignore(); 
+        
+        switch(choice){
+        	case 1:
+        		//signup
+        	case 2:
+        		system("cls");
+				cout << "  ____________\n";
+			    cout << "  |  _       |\n";
+			    cout << "  | | |      |\n";
+			    cout << "  | | |___   |\n";
+			    cout << "  | |_____|  |\n";
+			    cout << "  |__________|\n\n";
+			    cout << "     JR Library\n";
+			    cout << "JR Library Management System\n";
+			    cout<< "\n____________________________________________________________________________________________________________________________________________________________\n\n\n";
+		        
+		        cout<<"\n                                                    |======================================================|";
+                cout<<"\n                                                    |                Honda Service Centre                  |";
+                cout<<"\n                                                    |======================================================|";
+                cout<<"\n                                                    |1.User                                                |";
+                cout<<"\n                                                    |                                                      |";
+                cout<<"\n                                                    |2.Admin                                               |";
+                cout<<"\n                                                    |                                                      |";
+                cout<<"\n                                                    |3.Exit.                                               |";
+                cout<<"\n                                                    |======================================================|";
+		    
+		        cout<<"\n\n                                                    Please Enter Your Option : ";
+		        cin>>loginType;
+		        cin.ignore();
+		        
+		        //user
+		        if(loginType==1){
+		        	
+				}
+				//admin
+				else if(loginType==2){
+					admin.loadAdminsFromFile();
+					if(admin.adminLogin())
+					{
+						adminMenu(admin);
+					}
+					
+					
+				}
+		}
+	}
     return 0;
 } 
