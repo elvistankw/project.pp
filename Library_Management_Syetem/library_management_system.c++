@@ -115,6 +115,35 @@ public:
 	        current = next;
     	}
 	};
+
+	void insertBook(string id, string title, string author, int year){
+    	BookNode* temp = head;
+	    while (temp != nullptr) 
+		{
+	        if (temp->id == id) 
+			{
+	            cout << "Error: Book ID already exists!\n";
+	            return;
+	        }
+	        temp = temp->next;
+	    }
+	
+	    BookNode* newNode = new BookNode{id, title, author, year, true, nullptr};
+	
+	    if (head == nullptr) 
+		{
+	        head = newNode;
+	    } 
+		else 
+		{
+	        BookNode* last = head;
+	        while (last->next != nullptr) 
+			{
+	            last = last->next;
+	        }
+	        last->next = newNode;
+	    }
+	};
 };
 
 // ================ Derived Classes =================
@@ -553,7 +582,37 @@ public:
 	}
 
 	
-    void addBook();
+    void addBook(BookRecord& bookRecord){
+    	cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                       Add New Book\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+    	string id, title, author;
+	    int year;
+	
+	    cout << "Enter Book ID: ";
+	    getline(cin, id);
+	    cout << "Enter Title: ";
+	    getline(cin, title);
+	    cout << "Enter Author: ";
+	    getline(cin, author);
+	    cout << "Enter Year: ";
+	    cin >> year;
+	    cin.ignore(); 
+	
+	    bookRecord.insertBook(id, title, author, year);
+	    bookRecord.saveBooksToFile("books.txt");
+	    bookRecord.loadBooksFromFile("books.txt");
+	    cout << "Book added successfully!\n";
+	};
+	
 	void editBook();
     void deleteBook();
     void sortBooks();
