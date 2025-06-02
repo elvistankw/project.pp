@@ -144,6 +144,32 @@ public:
 	        last->next = newNode;
 	    }
 	};
+
+	void deleteBookById(string id) {
+    	BookNode* temp = head;
+	    BookNode* prev = nullptr;
+	
+	    while (temp != nullptr) 
+		{
+	        if (temp->id == id) 
+			{
+	            if (prev == nullptr) 
+				{
+	                head = temp->next; 
+	            } 
+				else 
+				{
+	                prev->next = temp->next; 
+	            }
+	            delete temp;
+	            cout << "Book deleted successfully!\n";
+	            return;
+	        }
+	        prev = temp;
+	        temp = temp->next;
+	    }
+	    cout << "Book ID not found!\n";
+	};
 };
 
 // ================ Derived Classes =================
@@ -613,8 +639,145 @@ public:
 	    cout << "Book added successfully!\n";
 	};
 	
-	void editBook();
-    void deleteBook();
+	void editBook(BookRecord& bookRecord){
+		cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                       Edit Book\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+		string newTitle;
+		string newAuthor;
+		int newYear;
+		 
+		if (bookRecord.head == nullptr) 
+		{
+        cout << "No books to edit.\n";
+        return;
+	    }
+	
+	    string id;
+	    cout << "Enter Book ID to edit: ";
+	    getline(cin, id);
+	
+	    BookRecord::BookNode* temp = bookRecord.head;
+	    while (temp != nullptr) {
+	        if (temp->id == id) {
+	            cout << "\n                                                         Current Book Information\n\n";
+	            cout << "----------------------------------------------------------------------------------------------------------------------------------\n";
+	            cout << "ID\t\t\tTitle\t\t\t\tAuthor\t\t\tYear\t\t\tAvailable\n";
+	            cout << "----------------------------------------------------------------------------------------------------------------------------------\n";
+	            cout << temp->id << "\t\t\t" << temp->title << "\t\t\t" << temp->author << "\t\t\t" << temp->year << "\t\t\t" << (temp->available ? "Yes" : "No") << endl;
+	            cout << "----------------------------------------------------------------------------------------------------------------------------------\n";
+	
+	            int choice;
+	            do {
+	                cout << "\nWhich information do you want to edit?" << endl;
+	                cout << "1. Title" << endl;
+	                cout << "2. Author" << endl;
+	                cout << "3. Year" << endl;
+	                cout << "4. Availability" << endl;
+	                cout << "5. Exit Edit" << endl;
+	                cout << "Enter your choice: ";
+	                cin >> choice;
+	                cin.ignore(); // Flush newline
+	
+	                switch (choice) {
+	                    case 1: {
+	                        string newTitle;
+	                        do {
+	                            cout << "Enter new title (current: " << temp->title << "): ";
+	                            getline(cin, newTitle);
+	                            if (newTitle.empty()) cout << "Title cannot be empty. Please try again.\n";
+	                        } while (newTitle.empty());
+	                        temp->setTitle(newTitle);
+	                        break;
+	                    }
+	
+	                    case 2: {
+	                        string newAuthor;
+	                        do {
+	                            cout << "Enter new author (current: " << temp->author << "): ";
+	                            getline(cin, newAuthor);
+	                            if (newAuthor.empty()) cout << "Author cannot be empty. Please try again.\n";
+	                        } while (newAuthor.empty());
+	                        temp->setAuthor(newAuthor);
+	                        break;
+	                    }
+	
+	                    case 3: {
+	                        int newYear;
+	                        cout << "Enter new year (current: " << temp->year << "): ";
+	                        while (!(cin >> newYear)) {
+	                            cout << "Invalid input. Please enter a valid year: ";
+	                            cin.clear();
+	                            cin.ignore(1000, '\n');
+	                        }
+	                        cin.ignore();
+	                        temp->setYear(newYear);
+	                        break;
+	                    }
+	
+	                    case 4: {
+	                        int availChoice;
+	                        cout << "Set availability (1 = Yes, 0 = No). Current: " << (temp->available ? "Yes" : "No") << ": ";
+	                        cin >> availChoice;
+	                        cin.ignore();
+	                        temp->setAvailable(availChoice == 1);
+	                        break;
+	                    }
+	
+	                    case 5:
+	                        cout << "Finished editing book.\n";
+	                        break;
+	
+	                    default:
+	                        cout << "Invalid choice. Try again.\n";
+	                }
+	
+	            } while (choice != 5);
+            
+	            cout << "Book updated successfully!\n";
+	            bookRecord.saveBooksToFile("books.txt");
+	            bookRecord.loadBooksFromFile("books.txt");
+	            return;
+	        }
+	        temp = temp->next;
+
+	    }
+	    cout << "Book ID not found!\n";
+	};
+	
+    void deleteBook(BookRecord& bookRecord){
+    	cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                       Delete Book\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+    	if (head == nullptr) 
+		{
+        	cout << "No books to delete.\n";
+        	return;
+	    }
+	
+	    string id;
+	    cout << "Enter Book ID to delete: ";
+	    getline(cin, id);
+		bookRecord.deleteBookById(id);
+		bookRecord.saveBooksToFile("books.txt");
+		bookRecord.loadBooksFromFile("books.txt");
+	};
     void sortBooks();
     void searchBook();
     void viewCustomers();
