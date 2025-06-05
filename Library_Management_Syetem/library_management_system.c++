@@ -993,7 +993,69 @@ void adminMenu(Admin& admin)
 		}
 	}while(choice!=17);
 }
-void customerMenu(Customer&);
+
+void customerMenu(Customer& customer){
+	int choice;
+	do
+	{
+		system("cls");
+		cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                        User Dashboard\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                              |------------------------------------------------------------------------------------------------------------|" << endl;
+	    cout << "                              |                                               MENU                                                         |" << endl;
+	    cout << "                              |------------------------------------------------------------------------------------------------------------|" << endl;
+	    cout << "                              |                                        1.  Borrow Book                                                     |" << endl;
+	    cout << "                              |                                        2.  Return Book                                                     |" << endl;
+	    cout << "                              |                                        3.  View Borrewed Book                                              |" << endl;
+	    cout << "                              |                                        4.  User Information                                                |" << endl;
+	    cout << "                              |                                        5.  Exit                                                            |" << endl;
+	    cout << "                              |------------------------------------------------------------------------------------------------------------|" << endl;
+		cout<< "Enter Your Choice: ";
+		cin>>choice;
+		cin.ignore();
+	
+		switch(choice)
+		{
+			case 1:
+				system("cls");
+				customer.borrowBook(); 
+				cout<<"Press Enter To Continue...";
+				cin.get();
+				break;
+			/*case 2:
+				system("cls");
+				customer.returnBook(); 
+				cout<<"Press Enter To Continue...";
+				cin.get();
+				break;
+			case 3:
+				system("cls");
+				customer.viewBorrowed(); 
+				cout<<"Press Enter To Continue...";
+				cin.get();
+				break;
+			case 4:
+				system("cls");
+				customer.display(); 
+				cout<<"Press Enter To Continue...";
+				cin.get();
+				break;*/
+			default:
+				cout<< "Invalid Choice...";
+		}
+	}while(choice!=5);
+	
+}
+
 void loadSampleBooks(Library&);
 void mainMenu();
 
@@ -1003,6 +1065,7 @@ int main() {
 	int choice;
 	int loginType;
 	Admin admin;
+	Customer customer;
 	
 	while(true){
 		system("cls");
@@ -1063,6 +1126,8 @@ int main() {
 		        
 		        //user
 		        if(loginType==1){
+
+					customerMenu(customer);
 		        	
 				}
 				//admin
