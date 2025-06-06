@@ -170,6 +170,97 @@ public:
 	    }
 	    cout << "Book ID not found!\n";
 	};
+
+	void setAvailable(string id, bool isAvailable){
+    	BookNode* temp = head;
+	    while (temp != nullptr) 
+		{
+	        if (temp->id == id) {
+	            temp->available = isAvailable;
+	            return;
+	        }
+	        temp = temp->next;
+    	}
+    	cout << "Error: Book ID not found!\n";
+	}
+	
+    void displayBooks(){
+    	cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                       View All Books\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+    	if (head == nullptr) {
+	        cout << "No books available.\n";
+	        return;
+	    }
+	
+	    cout << "------------------------------------------------------------------------------------------------------------------\n";
+	    cout << "ID\t\tTitle\t\t\t\tAuthor\t\t\t\tYear\t\tStatus\n";
+	    cout << "------------------------------------------------------------------------------------------------------------------\n";
+	
+	    BookNode* temp = head;
+	    while (temp != nullptr) {
+	        cout << temp->id << "\t\t"
+	             << temp->title << "\t\t\t"
+	             << temp->author << "\t\t\t"
+	             << temp->year << "\t\t";
+	             if (temp->available) 
+				 {
+				    cout << CYAN << "AVAILABLE" << RESET;
+				 } else {
+				    cout << RED << "BORROWED" << RESET;
+				 }
+				cout << endl << endl;
+
+	        temp = temp->next;
+	    }
+	    cout << "------------------------------------------------------------------------------------------------------------------\n";
+	};
+	
+	void displayAvailableBooks() {
+	    cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                       View Available Books\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	
+	    if (head == nullptr) {
+	        cout << "No books available.\n";
+	        return;
+	    }
+	
+	    cout << "------------------------------------------------------------------------------------------------------------------\n";
+	    cout << "ID\t\tTitle\t\t\t\tAuthor\t\t\t\tYear\t\tStatus\n";
+	    cout << "------------------------------------------------------------------------------------------------------------------\n";
+	
+	    BookNode* temp = head;
+	    bool found = false;
+	    while (temp != nullptr) {
+	        if (temp->available) {
+	            cout << temp->id << "\t\t"
+	                 << temp->title << "\t\t\t"
+	                 << temp->author << "\t\t\t"
+	                 << temp->year << CYAN << "\t\tAVAILABLE" << RESET << endl <<endl;
+	            found = true;
+	        }
+	        temp = temp->next;
+	    }
+	    if (!found) cout << "No available books found.\n";
+	    cout << "------------------------------------------------------------------------------------------------------------------\n";
+	}
 };
 
 // ================ Derived Classes =================
