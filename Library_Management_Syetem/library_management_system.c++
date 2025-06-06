@@ -3,6 +3,11 @@
 #include <iomanip>
 #include <fstream>
 #include <sstream>
+#include <ctime>
+#include <cstdlib>
+#define CYAN "\033[32m"
+#define RED "\033[31m"
+#define RESET "\033[0m"
 using namespace std;
 
 //5 txt file
@@ -882,7 +887,81 @@ public:
     Customer();
     Customer(int, string, string);
     void searchBook();
-    void borrowBook();
+
+    void borrowBook(){
+        BookRecord bookRecord;
+        bookRecord.loadBooksFromFile("books.txt");
+        
+        string bookId;
+        cout << CYAN << "\nEnter book ID to borrow: " << RESET;
+        getline(cin, bookId);
+
+        BookRecord::BookNode* book = nullptr;
+        BookRecord::BookNode* temp = bookRecord.head;
+        while(temp) {
+            if(temp->id == bookId) {
+                book = temp;
+                break;
+            }
+            temp = temp->next;
+        }
+
+        if(!book) {
+            cout << RED << "Book not found!" << RESET << endl;
+            return;
+        }
+
+        if(!book->available) {
+            cout << RED << "Book is already borrowed!" << RESET << endl;
+            return;
+        }
+
+        time_t now = time(0);
+        tm* ltm = localtime(&now);
+        char borrowDate[11], returnDate[11];
+        strftime(borrowDate, 11, "%Y-%m-%d", ltm);
+        
+        ltm->tm_mday += 7;
+        mktime(ltm);
+        strftime(returnDate, 11, "%Y-%m-%d", ltm);
+
+        BorrowBook* newBorrow = new BorrowBook{
+            this->getID(),
+            book->id,
+            book->title,
+            book->author,
+            book->year,
+            borrowDate,
+            returnDate,
+            nullptr
+        };
+
+        if(head == nullptr) {
+            head = newBorrow;
+        } else {
+            newBorrow->next = head;
+            head = newBorrow;
+        }
+
+        book->available = false;
+        
+        bookRecord.saveBooksToFile("books.txt");
+        
+        ofstream borrowFile("borrowed.txt", ios::app);
+        borrowFile << newBorrow->uid << ","
+                  << newBorrow->id << ","
+                  << newBorrow->title << ","
+                  << newBorrow->author << ","
+                  << newBorrow->year << ","
+                  << newBorrow->borrowDate << ","
+                  << newBorrow->returnDate << "\n";
+        borrowFile.close();
+
+        cout << CYAN << "\nBook borrowed successfully!\n"
+             << "Title: " << book->title << "\n"
+             << "Return Date: " << returnDate << RESET << endl;
+    }
+
     void returnBook();
 
     void viewBorrowed();
@@ -1005,7 +1084,69 @@ void adminMenu(Admin& admin)
 		}
 	}while(choice!=17);
 }
-void customerMenu(Customer&);
+
+void customerMenu(Customer& customer){
+	int choice;
+	do
+	{
+		system("cls");
+		cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                        User Dashboard\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                              |------------------------------------------------------------------------------------------------------------|" << endl;
+	    cout << "                              |                                               MENU                                                         |" << endl;
+	    cout << "                              |------------------------------------------------------------------------------------------------------------|" << endl;
+	    cout << "                              |                                        1.  Borrow Book                                                     |" << endl;
+	    cout << "                              |                                        2.  Return Book                                                     |" << endl;
+	    cout << "                              |                                        3.  View Borrewed Book                                              |" << endl;
+	    cout << "                              |                                        4.  User Information                                                |" << endl;
+	    cout << "                              |                                        5.  Exit                                                            |" << endl;
+	    cout << "                              |------------------------------------------------------------------------------------------------------------|" << endl;
+		cout<< "Enter Your Choice: ";
+		cin>>choice;
+		cin.ignore();
+	
+		switch(choice)
+		{
+			case 1:
+				system("cls");
+				customer.borrowBook(); 
+				cout<<"Press Enter To Continue...";
+				cin.get();
+				break;
+			/*case 2:
+				system("cls");
+				customer.returnBook(); 
+				cout<<"Press Enter To Continue...";
+				cin.get();
+				break;
+			case 3:
+				system("cls");
+				customer.viewBorrowed(); 
+				cout<<"Press Enter To Continue...";
+				cin.get();
+				break;
+			case 4:
+				system("cls");
+				customer.display(); 
+				cout<<"Press Enter To Continue...";
+				cin.get();
+				break;*/
+			default:
+				cout<< "Invalid Choice...";
+		}
+	}while(choice!=5);
+	
+}
+
 void loadSampleBooks(Library&);
 void mainMenu();
 
@@ -1015,6 +1156,7 @@ int main() {
 	int choice;
 	int loginType;
 	Admin admin;
+	Customer customer;
 	
 	while(true){
 		system("cls");
@@ -1075,6 +1217,8 @@ int main() {
 		        
 		        //user
 		        if(loginType==1){
+
+					customerMenu(customer);
 		        	
 				}
 				//admin
