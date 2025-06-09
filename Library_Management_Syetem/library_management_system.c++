@@ -10,7 +10,7 @@
 #define RESET "\033[0m"
 using namespace std;
 
-//5 txt file。
+//5 txt file
 //user.txt
 //admin.txt
 //books.txt
