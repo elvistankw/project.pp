@@ -3,22 +3,22 @@
 #include <iomanip>
 #include <fstream>
 #include <sstream>
-#include <ctime>
-#include <cstdlib>
-#define CYAN "\033[32m"
-#define RED "\033[31m"
-#define RESET "\033[0m"
+#define CYAN "\033[32m" //green color
+#define RED "\033[31m"//red color
+#define RESET "\033[0m"//reset color
 using namespace std;
 
 //5 txt file
 //user.txt
-//admin.txt
-//books.txt
+//admin.txt /
+//books.txt /
 //borrowed.txt
 //review.txt
-//report.txt
+//history.txt
+//magazine.txt /
 
- 
+
+// review 
 struct ReviewNode {
     int bookId;          
     string reviewerName; 
@@ -26,6 +26,8 @@ struct ReviewNode {
     int rating;          
     ReviewNode* next;    
 };
+
+
 
 // ================= Base Classes =================
 
@@ -74,27 +76,34 @@ public:
 	{
 		return phone_num;
 	}
-    void setPassword(const string& newPass) 
+	void setName(string& newName)
+	{
+		name=newName;
+	}
+	void setEmail(string& newEmail)
+	{
+		email=newEmail;
+	}
+	void setPhoneNum(string& newPhoneNum){
+		phone_num=newPhoneNum;
+	}
+    void setPassword(string& newPass) 
 	{ 
 		password = newPass; 
 	}
-    void setEmail(const string& e) 
-	{ 
-		email = e; 
-	}
-	void setName(const string& n) 
-	{ 
-		name = n; 
-	}
-	void setPhoneNum(string num) 
-	{ 
-		phone_num = num; 
-	}
 	
-    //virtual void display() const;
-    //virtual ~Person();
+    virtual void display() {
+    	cout << "ID: " << id << endl;
+	    cout << "Name: " << name << endl;
+	    cout << "Email: " << email << endl;
+	    cout << "Phone: " << phone_num << endl;
+	};
+	
+    virtual ~Person(){};
 };
 
+
+//Book 
 class BookRecord {
 public:
 	//book node
@@ -105,10 +114,33 @@ public:
         int year;
         bool available;
         BookNode* next;
+        
+        void setTitle(string& newTitle) 
+		{
+	        title = newTitle;
+	    }
+	
+	    void setAuthor( string& newAuthor) 
+		{
+	        author = newAuthor;
+	    }
+	
+	    void setYear(int newYear) 
+		{
+	        year = newYear;
+	    }
+	    
+	    void setAvailable(bool status) 
+		{
+	    	available=status;
+		}
+		
     };
     BookNode* head;
 
     BookRecord() : head(nullptr){};
+    
+    
 
     virtual ~BookRecord()
 	{
@@ -120,8 +152,8 @@ public:
 	        current = next;
     	}
 	};
-
-	void insertBook(string id, string title, string author, int year){
+	
+    void insertBook(string id, string title, string author, int year){
     	BookNode* temp = head;
 	    while (temp != nullptr) 
 		{
@@ -149,8 +181,8 @@ public:
 	        last->next = newNode;
 	    }
 	};
-
-	void deleteBookById(string id) {
+	
+    void deleteBookById(string id) {
     	BookNode* temp = head;
 	    BookNode* prev = nullptr;
 	
@@ -175,8 +207,8 @@ public:
 	    }
 	    cout << "Book ID not found!\n";
 	};
-
-	void setAvailable(string id, bool isAvailable){
+    
+    void setAvailable(string id, bool isAvailable){
     	BookNode* temp = head;
 	    while (temp != nullptr) 
 		{
@@ -266,6 +298,229 @@ public:
 	    if (!found) cout << "No available books found.\n";
 	    cout << "------------------------------------------------------------------------------------------------------------------\n";
 	}
+	
+	void displayBorrowedBooks() {
+	    cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                       View Borrowed Books\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	
+	    if (head == nullptr) {
+	        cout << "No books available.\n";
+	        return;
+	    }
+	
+	    cout << "------------------------------------------------------------------------------------------------------------------\n";
+	    cout << "ID\t\tTitle\t\t\t\tAuthor\t\t\t\tYear\t\tStatus\n";
+	    cout << "------------------------------------------------------------------------------------------------------------------\n";
+	
+	    BookNode* temp = head;
+	    bool found = false;
+	    while (temp != nullptr) {
+	        if (!temp->available) {
+	            cout << temp->id << "\t\t"
+	                 << temp->title << "\t\t\t"
+	                 << temp->author << "\t\t\t"
+	                 << temp->year << RED << "\t\tBORROWED" << RESET << endl << endl;
+	            found = true;
+	        }
+	        temp = temp->next;
+	    }
+	    if (!found) cout << "No borrowed books found.\n";
+	    cout << "------------------------------------------------------------------------------------------------------------------\n";
+	}
+	
+	void displayMagazine(){
+    	cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                       View All Magazine\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+    	if (head == nullptr) {
+	        cout << "No books available.\n";
+	        return;
+	    }
+	
+	    cout << "------------------------------------------------------------------------------------------------------------------\n";
+	    cout << "ID\t\tTitle\t\t\t\tAuthor\t\t\t\tYear\t\tStatus\n";
+	    cout << "------------------------------------------------------------------------------------------------------------------\n";
+	
+	    BookNode* temp = head;
+	    while (temp != nullptr) {
+	        cout << temp->id << "\t\t"
+	             << temp->title << "\t\t\t"
+	             << temp->author << "\t\t\t"
+	             << temp->year << "\t\t";
+	             if (temp->available) 
+				 {
+				    cout << CYAN << "AVAILABLE" << RESET;
+				 } else {
+				    cout << RED << "BORROWED" << RESET;
+				 }
+				cout << endl << endl;
+
+	        temp = temp->next;
+	    }
+	    cout << "------------------------------------------------------------------------------------------------------------------\n";
+	};
+	
+	void displayAvailableMagazine() {
+	    cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                       View Available Magazine\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	
+	    if (head == nullptr) {
+	        cout << "No books available.\n";
+	        return;
+	    }
+	
+	    cout << "------------------------------------------------------------------------------------------------------------------\n";
+	    cout << "ID\t\tTitle\t\t\t\tAuthor\t\t\t\tYear\t\tStatus\n";
+	    cout << "------------------------------------------------------------------------------------------------------------------\n";
+	
+	    BookNode* temp = head;
+	    bool found = false;
+	    while (temp != nullptr) {
+	        if (temp->available) {
+	            cout << temp->id << "\t\t"
+	                 << temp->title << "\t\t\t"
+	                 << temp->author << "\t\t\t"
+	                 << temp->year << CYAN << "\t\tAVAILABLE" << RESET << endl <<endl;
+	            found = true;
+	        }
+	        temp = temp->next;
+	    }
+	    if (!found) cout << "No available books found.\n";
+	    cout << "------------------------------------------------------------------------------------------------------------------\n";
+	}
+	
+	void displayBorrowedMagazine() {
+	    cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                       View Borrowed Magazine\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	
+	    if (head == nullptr) {
+	        cout << "No books available.\n";
+	        return;
+	    }
+	
+	    cout << "------------------------------------------------------------------------------------------------------------------\n";
+	    cout << "ID\t\tTitle\t\t\t\tAuthor\t\t\t\tYear\t\tStatus\n";
+	    cout << "------------------------------------------------------------------------------------------------------------------\n";
+	
+	    BookNode* temp = head;
+	    bool found = false;
+	    while (temp != nullptr) {
+	        if (!temp->available) {
+	            cout << temp->id << "\t\t"
+	                 << temp->title << "\t\t\t"
+	                 << temp->author << "\t\t\t"
+	                 << temp->year << RED << "\t\tBORROWED" << RESET << endl << endl;
+	            found = true;
+	        }
+	        temp = temp->next;
+	    }
+	    if (!found) cout << "No borrowed books found.\n";
+	    cout << "------------------------------------------------------------------------------------------------------------------\n";
+	}
+    
+    void saveBooksToFile(const string& filename) {
+        ofstream outFile(filename, ios::trunc);
+        if (!outFile) {
+            cerr << "Error opening file for writing!\n";
+            return;
+        }
+
+        BookNode* temp = head;
+        while (temp != nullptr) {
+            outFile << temp->id << ","
+                   << temp->title << ","
+                   << temp->author << ","
+                   << temp->year << ","
+                   << (temp->available ? "1" : "0") << ",\n"; 
+            temp = temp->next;
+        }
+        outFile.close();
+    }
+    
+    void loadBooksFromFile(const string& filename) {
+    	BookNode* current = head;
+	    while (current != nullptr) {
+	        BookNode* toDelete = current;
+	        current = current->next;
+	        delete toDelete;
+	    }
+	    head = nullptr;
+	    
+	    ifstream inFile(filename);
+	    if (!inFile) {
+	        cerr << "Error opening file for reading!\n";
+	        return;
+	    }
+	
+	    string line;
+	    while (getline(inFile, line)) {
+	        stringstream ss(line);
+	        string id, title, author, yearStr, availableStr;
+	
+	        getline(ss, id, ',');
+	        getline(ss, title, ',');
+	        getline(ss, author, ',');
+	        getline(ss, yearStr, ',');
+	        getline(ss, availableStr,',');
+	
+	        int year = stoi(yearStr);
+	        bool available = (availableStr == "1");
+	        
+	        BookNode* newNode = new BookNode{id, title, author, year, available, nullptr};
+	
+	        if (head == nullptr) 
+			{
+	            head = newNode;
+	        } else {
+	            BookNode* temp = head;
+	            while (temp->next != nullptr) {
+	                temp = temp->next;
+	            }
+	            temp->next = newNode;
+	        }
+        	setAvailable(id, available);
+	    }
+	
+	    inFile.close();
+	}
+
+    
+    
 };
 
 // ================ Derived Classes =================
@@ -273,45 +528,9 @@ public:
 class Admin : public Person {
 private:
 	struct AdminNode {
-	    string id;
-	    string name;
-	    string password;
-	    string email;
-	    string phone_num;
+		Admin* admin; 
 	    AdminNode* next;
-	    
-	    string getName() 
-		{ 
-			return name; 
-		}
-	    string getPassword() 
-		{ 
-			return password; 
-		}
-	    string getEmail() 
-		{
-	    	return email;
-		}
-		string getPhoneNum()
-		{
-			return phone_num;
-		}
-	    void setPassword(const string& newPass) 
-		{ 
-			password = newPass; 
-		}
-	    void setEmail(const string& e) 
-		{ 
-			email = e; 
-		}
-		void setName(const string& n) 
-		{ 
-			name = n; 
-		}
-		void setPhoneNum(string num) 
-		{ 
-			phone_num = num; 
-		}
+	    AdminNode(Admin* a) : admin(a), next(nullptr) {}
 		};
 		
 		AdminNode* head;
@@ -322,7 +541,7 @@ public:
 	};
 	
 	Admin(string id, string name, string password, string email = "", string phone_num = "") : Person(id, name, password, email, phone_num) {}
-
+	
 	bool adminLogin() {
 		system("cls");
 	    string inputEmail, inputPassword;
@@ -345,8 +564,8 @@ public:
 	
 	    AdminNode* temp = head;
 	    while (temp != nullptr) {
-	        if (temp->email == inputEmail && temp->password == inputPassword) {
-	            cout << "\nLogin successful! Welcome, " << temp->name << "!" << endl;
+	        if (temp->admin->getEmail() == inputEmail && temp->admin->getPassword() == inputPassword) {
+	            cout << "\nLogin successful! Welcome, " << temp->admin->getName() << "!" << endl;
 	            cin.ignore();
 	            cin.get();
 	            return true;
@@ -359,13 +578,14 @@ public:
 	    cin.get();
 	    return false;
 	}
+
     
     bool isDuplicateID(string id) 
 	{
 	    AdminNode* temp = head;
 	    while (temp != nullptr) 
 		{
-	        if (temp->id == id) 
+	        if (temp->admin->getID() == id) 
 			{
 	            return true; 
 	        }
@@ -379,7 +599,7 @@ public:
 	    AdminNode* temp = head;
 	    while (temp != nullptr) 
 		{
-	        if (temp->email == email) 
+	        if (temp->admin->getEmail() == email) 
 			{
 	            return true;
 	        }
@@ -458,7 +678,10 @@ public:
 	        return;
 	    }
 	
-	    AdminNode* newNode = new AdminNode{id, name, password, email, phone_num, nullptr};
+	    
+	Admin* newAdmin = new Admin(id, name, password, email, phone_num);
+
+	AdminNode* newNode = new AdminNode(newAdmin);
 	
 	    if (head == nullptr) 
 		{
@@ -501,13 +724,13 @@ public:
 	    while (temp != nullptr) 
 		{  
 	
-		    if (temp->id == editID) 
+		    if (temp->admin->getID() == editID) 
 	        {
 	            cout << "\n                                                               Current Admin Information\n\n";
 	            cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n";
 	            cout << "ID\t\t\t\t\tName\t\t\t\tEmail\t\t\t\tPhone Number" << endl;
 	            cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n";
-	            cout << temp->id << "\t\t\t\t" << temp->name << "\t\t\t" << temp->email << "\t\t\t" << temp->phone_num << endl;
+	            cout << temp->admin->getID() << "\t\t\t\t" << temp->admin->getName() << "\t\t\t" << temp->admin->getEmail() << "\t\t\t" << temp->admin->getPhoneNum() << endl;
 	            cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n";
 	
 	            int choice;
@@ -526,13 +749,13 @@ public:
 	                    case 1: {
 	                        string newName;
 	                        do {
-	                            cout << "Enter new name (current: " << temp->name << "): ";
+	                            cout << "Enter new name (current: " << temp->admin->getName() << "): ";
 	                            getline(cin, newName);
 	                            if (newName.empty()) {
 	                            	cout << "Name cannot be empty. Please try again.\n";
 								}
 	                        } while (newName.empty());
-	                        temp->setName(newName);
+	                        temp->admin->setName(newName);
 	                        break;
 	                    }
 	
@@ -551,29 +774,34 @@ public:
 	                                cout << "Passwords do not match. Please try again.\n";
 	                            }
 	                        } while (password.empty() || password != confirm_password);
-	                        temp->setPassword(password);
+	                        temp->admin->setPassword(password);
 	                        break;
 	                    }
 	
 	                    case 3: {
 	                        string newEmail;
-	                        do {
-	                            cout << "Enter new email (current: " << temp->email << "): ";
-	                            getline(cin, newEmail);
-	                            if (newEmail.empty()) cout << "Email cannot be empty. Please try again.\n";
-	                        } while (newEmail.empty());
-	                        temp->setEmail(newEmail);
+							do {
+							    cout << "Enter new email (current: " << temp->admin->getEmail() << "): ";
+							    getline(cin, newEmail);
+							    if (newEmail.empty()) {
+							        cout << "Email cannot be empty. Please try again.\n";
+							    } else if (isDuplicateEmail(newEmail)) {
+							        cout << "Email already exists. Please try another one.\n";
+							    }
+							} while (newEmail.empty() || isDuplicateEmail(newEmail));
+							
+							temp->admin->setEmail(newEmail);
 	                        break;
 	                    }
 	
 	                    case 4: {
 	                        string phoneInput;
 	                        do {
-	                            cout << "Enter new phone number (current: " << temp->phone_num << "): ";
+	                            cout << "Enter new phone number (current: " << temp->admin->getPhoneNum() << "): ";
 	                            getline(cin, phoneInput);
 	                            if (phoneInput.empty()) cout << "Phone number cannot be empty. Please try again.\n";
 	                        } while (phoneInput.empty());
-	                        temp->setPhoneNum(phoneInput);
+	                        temp->admin->setPhoneNum(phoneInput);
 	                        break;
 	                    }
 	
@@ -597,7 +825,7 @@ public:
     cout << "Admin ID not found." << endl;
 	}
 	
-	 void removeAdmin() {
+	void removeAdmin() {
 	    if (head == nullptr) 
 		{
 	        cout << "No admins in the list to remove." << endl;
@@ -623,7 +851,7 @@ public:
 	    AdminNode* temp = head;
 	    AdminNode* prev = nullptr;
 	
-	    while (temp != nullptr && temp->id != targetID) 
+	    while (temp != nullptr && temp->admin->getID() != targetID) 
 		{
 	        prev = temp;
 	        temp = temp->next;
@@ -656,7 +884,7 @@ public:
 			AdminNode* temp = head;
 	        while (temp != nullptr) 
 	        {
-			    outFile << temp->id << "," << temp->name << "," << temp->password << "," << temp->email << "," << temp->phone_num << endl;
+			    outFile << temp->admin->getID() << "," << temp->admin->getName() << "," << temp->admin->getPassword() << "," << temp->admin->getEmail() << "," << temp->admin->getPhoneNum() << endl;
 	            temp = temp->next;
 	        }
 		    outFile.close();
@@ -666,7 +894,17 @@ public:
 		}
 	}
 
+	
 	void loadAdminsFromFile() {
+		AdminNode* current = head;
+	    while (current != nullptr) 
+		{
+	        AdminNode* toDelete = current;
+	        current = current->next;
+	        delete toDelete;
+	    }
+	    head = nullptr;
+    
 	    ifstream inFile("admin.txt");
 	    if (!inFile.is_open()) {
 	        cout << "Cannot found admin.txt, load unsuccessfully..." << endl;
@@ -684,7 +922,10 @@ public:
 	        getline(ss, email, ',');
 	        getline(ss, phone);
 	
-	        AdminNode* newNode = new AdminNode{id, name, password, email, phone, nullptr};
+			Admin* a = new Admin(id, name, password, email, phone);
+
+			AdminNode* newNode = new AdminNode(a);
+
 	        if (head == nullptr)
 			{
 	        	head = newNode;
@@ -701,9 +942,41 @@ public:
 	    }
 	
 	    inFile.close();
-	}
-
+	} 
 	
+	void displayAdmin()
+	{
+		if (head == nullptr) {
+	        cout << "No admin records found." << endl;
+	        return;
+	    }
+	    
+	    AdminNode* temp = head;
+	    cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                     View Admin\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "------------------------------------------------------------------------------------------------------------------------------------------------" << endl;
+	    cout << "ID\t\t\t\t\tName\t\t\t\tEmail\t\t\t\tPhone Number" << endl;
+	    cout << "------------------------------------------------------------------------------------------------------------------------------------------------" << endl;
+	    
+	    while (temp != nullptr) {
+	        cout << temp->admin->getID() << "\t\t\t\t";
+	        cout << temp->admin->getName()  << "\t\t\t";
+	        cout << temp->admin->getEmail()  << "\t\t\t";
+	        cout << temp->admin->getPhoneNum() << endl;
+	        cout << "------------------------------------------------------------------------------------------------------------------------------------------------" << endl;
+	        temp = temp->next;  
+	    }
+	}
+ 
     void addBook(BookRecord& bookRecord){
     	cout << "  ____________\n";
 	    cout << "  |  _       |\n";
@@ -874,103 +1147,230 @@ public:
 		bookRecord.saveBooksToFile("books.txt");
 		bookRecord.loadBooksFromFile("books.txt");
 	};
-    void sortBooks();
-    void searchBook();
+	
+	void addMagazine(BookRecord& bookRecord){
+    	cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                       Add New Magazine\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+    	string id, title, author;
+	    int year;
+	
+	    cout << "Enter Magazine ID: ";
+	    getline(cin, id);
+	    cout << "Enter Title: ";
+	    getline(cin, title);
+	    cout << "Enter Author: ";
+	    getline(cin, author);
+	    cout << "Enter Year: ";
+	    cin >> year;
+	    cin.ignore(); 
+	
+	    bookRecord.insertBook(id, title, author, year);
+	    bookRecord.saveBooksToFile("magazine.txt");
+	    bookRecord.loadBooksFromFile("magazine.txt");
+	    cout << "Book added successfully!\n";
+	};
+	
+	void editMagazine(BookRecord& bookRecord){
+		cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                       Edit Magazine\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+		string newTitle;
+		string newAuthor;
+		int newYear;
+		 
+		if (bookRecord.head == nullptr) 
+		{
+        cout << "No Magazines to edit.\n";
+        return;
+	    }
+	
+	    string id;
+	    cout << "Enter Magazine ID to edit: ";
+	    getline(cin, id);
+	
+	    BookRecord::BookNode* temp = bookRecord.head;
+	    while (temp != nullptr) {
+	        if (temp->id == id) {
+	            cout << "\n                                                         Current Magazine Information\n\n";
+	            cout << "----------------------------------------------------------------------------------------------------------------------------------\n";
+	            cout << "ID\t\t\tTitle\t\t\t\tAuthor\t\t\tYear\t\t\tAvailable\n";
+	            cout << "----------------------------------------------------------------------------------------------------------------------------------\n";
+	            cout << temp->id << "\t\t\t" << temp->title << "\t\t\t" << temp->author << "\t\t\t" << temp->year << "\t\t\t" << (temp->available ? "Yes" : "No") << endl;
+	            cout << "----------------------------------------------------------------------------------------------------------------------------------\n";
+	
+	            int choice;
+	            do {
+	                cout << "\nWhich information do you want to edit?" << endl;
+	                cout << "1. Title" << endl;
+	                cout << "2. Author" << endl;
+	                cout << "3. Year" << endl;
+	                cout << "4. Availability" << endl;
+	                cout << "5. Exit Edit" << endl;
+	                cout << "Enter your choice: ";
+	                cin >> choice;
+	                cin.ignore(); // Flush newline
+	
+	                switch (choice) {
+	                    case 1: {
+	                        string newTitle;
+	                        do {
+	                            cout << "Enter new title (current: " << temp->title << "): ";
+	                            getline(cin, newTitle);
+	                            if (newTitle.empty()) cout << "Title cannot be empty. Please try again.\n";
+	                        } while (newTitle.empty());
+	                        temp->setTitle(newTitle);
+	                        break;
+	                    }
+	
+	                    case 2: {
+	                        string newAuthor;
+	                        do {
+	                            cout << "Enter new author (current: " << temp->author << "): ";
+	                            getline(cin, newAuthor);
+	                            if (newAuthor.empty()) cout << "Author cannot be empty. Please try again.\n";
+	                        } while (newAuthor.empty());
+	                        temp->setAuthor(newAuthor);
+	                        break;
+	                    }
+	
+	                    case 3: {
+	                        int newYear;
+	                        cout << "Enter new year (current: " << temp->year << "): ";
+	                        while (!(cin >> newYear)) {
+	                            cout << "Invalid input. Please enter a valid year: ";
+	                            cin.clear();
+	                            cin.ignore(1000, '\n');
+	                        }
+	                        cin.ignore();
+	                        temp->setYear(newYear);
+	                        break;
+	                    }
+	
+	                    case 4: {
+	                        int availChoice;
+	                        cout << "Set availability (1 = Yes, 0 = No). Current: " << (temp->available ? "Yes" : "No") << ": ";
+	                        cin >> availChoice;
+	                        cin.ignore();
+	                        temp->setAvailable(availChoice == 1);
+	                        break;
+	                    }
+	
+	                    case 5:
+	                        cout << "Finished editing book.\n";
+	                        break;
+	
+	                    default:
+	                        cout << "Invalid choice. Try again.\n";
+	                }
+	
+	            } while (choice != 5);
+            
+	            cout << "Magazine updated successfully!\n";
+	            bookRecord.saveBooksToFile("magazine.txt");
+	            bookRecord.loadBooksFromFile("magazine.txt");
+	            return;
+	        }
+	        temp = temp->next;
+
+	    }
+	    cout << "Magazine ID not found!\n";
+	};
+	
+    void deleteMagazine(BookRecord& bookRecord){
+    	cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                       Delete Magazine\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+    	if (head == nullptr) 
+		{
+        	cout << "No magazine to delete.\n";
+        	return;
+	    }
+	
+	    string id;
+	    cout << "Enter Magazine ID to delete: ";
+	    getline(cin, id);
+		bookRecord.deleteBookById(id);
+		bookRecord.saveBooksToFile("magazine.txt");
+		bookRecord.loadBooksFromFile("magazine.txt");
+	};
+	
     void viewCustomers();
+    void searchCustomers();
     void generateReport();
-    //void display() const override;
+    
+    void display() override 
+	{
+		cout << "=== Admin Information ===" << endl;
+        cout << "Admin ID: " << getID() << endl;
+        cout << "Admin Name: " << getName() << endl;
+        cout << "Email: " << getEmail() << endl;
+        cout << "Phone: " << getPhoneNum() << endl;
+	};
     //friend void viewReport(Admin);
 };
 
+
+
+
 class Customer : public Person {
+private: 
+	string keyword;  // for password reset
+
+    struct CustomerNode {
+        Customer* customer;
+        CustomerNode* next;
+        CustomerNode(Customer* c) : customer(c), next(nullptr) {}
+    };
+
+    CustomerNode* head;
+    
 public:
-    Customer();
-    Customer(int, string, string);
+    Customer() { head = nullptr; }
+
+    Customer(string id, string name, string password, string email, string phone_num, string keyword)
+        : Person(id, name, password, email, phone_num), keyword(keyword) {}
+    
     void searchBook();
-
-    void borrowBook(){
-        BookRecord bookRecord;
-        bookRecord.loadBooksFromFile("books.txt");
-        
-        string bookId;
-        cout << CYAN << "\nEnter book ID to borrow: " << RESET;
-        getline(cin, bookId);
-
-        BookRecord::BookNode* book = nullptr;
-        BookRecord::BookNode* temp = bookRecord.head;
-        while(temp) {
-            if(temp->id == bookId) {
-                book = temp;
-                break;
-            }
-            temp = temp->next;
-        }
-
-        if(!book) {
-            cout << RED << "Book not found!" << RESET << endl;
-            return;
-        }
-
-        if(!book->available) {
-            cout << RED << "Book is already borrowed!" << RESET << endl;
-            return;
-        }
-
-        time_t now = time(0);
-        tm* ltm = localtime(&now);
-        char borrowDate[11], returnDate[11];
-        strftime(borrowDate, 11, "%Y-%m-%d", ltm);
-        
-        ltm->tm_mday += 7;
-        mktime(ltm);
-        strftime(returnDate, 11, "%Y-%m-%d", ltm);
-
-        BorrowBook* newBorrow = new BorrowBook{
-            this->getID(),
-            book->id,
-            book->title,
-            book->author,
-            book->year,
-            borrowDate,
-            returnDate,
-            nullptr
-        };
-
-        if(head == nullptr) {
-            head = newBorrow;
-        } else {
-            newBorrow->next = head;
-            head = newBorrow;
-        }
-
-        book->available = false;
-        
-        bookRecord.saveBooksToFile("books.txt");
-        
-        ofstream borrowFile("borrowed.txt", ios::app);
-        borrowFile << newBorrow->uid << ","
-                  << newBorrow->id << ","
-                  << newBorrow->title << ","
-                  << newBorrow->author << ","
-                  << newBorrow->year << ","
-                  << newBorrow->borrowDate << ","
-                  << newBorrow->returnDate << "\n";
-        borrowFile.close();
-
-        cout << CYAN << "\nBook borrowed successfully!\n"
-             << "Title: " << book->title << "\n"
-             << "Return Date: " << returnDate << RESET << endl;
-    }
-
+    void borrowBook();
     void returnBook();
-
     void viewBorrowed();
-    //void display() const override;
-    void viewBorrowed();//借着的书
-    void display() const override;//display全部书
+    void display() override{
+    	cout << "=== User Information ===" << endl;
+        cout << "User ID: " << getID() << endl;
+        cout << "Name: " << getName() << endl;
+        cout << "Email: " << getEmail() << endl;
+        cout << "Phone: " << getPhoneNum() << endl;
+	};
     friend void displayUserInfo(Customer); // Friend function
     friend void viewBorrowHistory(const Customer);
 };
+
+
 
 class Library : public BookRecord {
 public:
@@ -987,21 +1387,13 @@ public:
     friend void searchHelper(Library&, string);  // Friend function
 };
 
-class UserManage {
-public:
-    Person* login(const string& name, const string& password);
-    bool signupCustomer(const string& name, const string& password);
-    bool resetPassword(const string& name, const string& newPassword);
-private:
-    int generateNewId(); 
-};
-
 
 // =============== Function Prototypes =============
 
 void loginMenu();
 void adminMenu(Admin& admin)
 {
+	BookRecord bookRecords;
 	int choice;
 	do
 	{
@@ -1024,18 +1416,18 @@ void adminMenu(Admin& admin)
 	    cout << "                              |                                        2.  Edit Admin                                                      |" << endl;
 	    cout << "                              |                                        3.  Delete Admin                                                    |" << endl;
 	    cout << "                              |                                        4.  Diaplay Admin                                                   |" << endl;
-	    cout << "                              |                                        5.  View All Books                                                  |" << endl;
-	    cout << "                              |                                        6.  View Available Books                                            |" << endl;
-	    cout << "                              |                                        7.  View Borrowed Books                                             |" << endl;
-	    cout << "                              |                                        8.  Add New Book                                                    |" << endl;
-	    cout << "                              |                                        9.  Edit Book                                                       |" << endl;
-	    cout << "                              |                                        10. Delete Book                                                     |" << endl;
-	    cout << "                              |                                        11. Sort Books                                                      |" << endl;
-	    cout << "                              |                                        12. Search Books                                                    |" << endl;
-	    cout << "                              |                                        13. View All Customers                                              |" << endl;
-	    cout << "                              |                                        14. Sort Customers                                                  |" << endl;
-	    cout << "                              |                                        15. Search Customers                                                |" << endl;
-	    cout << "                              |                                        16. View Report                                                     |" << endl;
+	    cout << "                              |                                        5.  Add New Books                                                   |" << endl;
+	    cout << "                              |                                        6.  Edit Books                                                      |" << endl;
+	    cout << "                              |                                        7.  Delete Books                                                    |" << endl;
+	    cout << "                              |                                        8.  View All Book                                                   |" << endl;
+	    cout << "                              |                                        9.  View Available Book                                             |" << endl;
+	    cout << "                              |                                        10. View Borrowed Book                                              |" << endl;
+	    cout << "                              |                                        11. Add Magazine                                                    |" << endl;
+	    cout << "                              |                                        12. Edit Magazine                                                   |" << endl;
+	    cout << "                              |                                        13. Delete Magazine                                                 |" << endl;
+	    cout << "                              |                                        14. View All Magazine                                               |" << endl;
+	    cout << "                              |                                        15. View Available Magazine                                         |" << endl;
+	    cout << "                              |                                        16. View Borrowed Magazine                                          |" << endl;
 	    cout << "                              |                                        17. Exit                                                            |" << endl;
 	    cout << "                              |------------------------------------------------------------------------------------------------------------|" << endl;
 		cout<< "Enter Your Choice: ";
@@ -1048,6 +1440,7 @@ void adminMenu(Admin& admin)
 				system("cls");
 				admin.addAdmin(); 
 				admin.saveAdminToFile();
+				admin.loadAdminsFromFile();
 				cout<<"Press Enter To Continue...";
 				cin.get();
 				break;
@@ -1055,6 +1448,7 @@ void adminMenu(Admin& admin)
 				system("cls");
 				admin.editAdmin();
 				admin.saveAdminToFile(); 
+				admin.loadAdminsFromFile();
 				cout<<"Press Enter To Continue...";
 				cin.get();
 				break;
@@ -1062,6 +1456,7 @@ void adminMenu(Admin& admin)
 				system("cls");
 				admin.removeAdmin();
 				admin.saveAdminToFile();
+				admin.loadAdminsFromFile();
 				cout<<"Press Enter To Continue...";
 				cin.get();
 				break;
@@ -1072,83 +1467,94 @@ void adminMenu(Admin& admin)
 				cin.get();
 				break;
 			case 5:
-				//search book;
+				system("cls");
+				bookRecords.loadBooksFromFile("books.txt");
+				admin.addBook(bookRecords);
+				cout<< "Press Enter To Continue...";
+				cin.get();
+				break;
 			case 6:
-				//view customer
+				system("cls");
+				
+				admin.editBook(bookRecords);
+				cout<< "Press Enter To Continue...";
+				cin.get();
+				break;
 			case 7:
-				//view report
+				system("cls");
+				bookRecords.loadBooksFromFile("books.txt");
+				admin.deleteBook(bookRecords);
+				cout<< "Press Enter To Continue...";
+				cin.get();
+				break;
 			case 8: 
-				//view borrowed book
+				system("cls");
+				bookRecords.loadBooksFromFile("books.txt");
+				bookRecords.displayBooks();
+				cout<< "Press Enter To Continue...";
+				cin.get();
+				break;
+			case 9: 
+				system("cls");
+				bookRecords.loadBooksFromFile("books.txt");
+				bookRecords.displayAvailableBooks();
+				cout<< "Press Enter To Continue...";
+				cin.get();
+				break;
+			case 10: 
+				system("cls");
+				bookRecords.loadBooksFromFile("books.txt");
+				bookRecords.displayBorrowedBooks();
+				cout<< "Press Enter To Continue...";
+				cin.get();
+				break;
+			case 11:
+				system("cls");
+				bookRecords.loadBooksFromFile("magazine.txt");
+				admin.addMagazine(bookRecords);
+				cout<< "Press Enter To Continue...";
+				cin.get();
+				break;
+			case 12:
+				system("cls");
+				admin.editMagazine(bookRecords);
+				cout<< "Press Enter To Continue...";
+				cin.get();
+				break;
+			case 13:
+				system("cls");
+				bookRecords.loadBooksFromFile("magazine.txt");
+				admin.deleteMagazine(bookRecords);
+				cout<< "Press Enter To Continue...";
+				cin.get();
+				break;
+			case 14: 
+				system("cls");
+				bookRecords.loadBooksFromFile("magazine.txt");
+				bookRecords.displayBooks();
+				cout<< "Press Enter To Continue...";
+				cin.get();
+				break;
+			case 15: 
+				system("cls");
+				bookRecords.loadBooksFromFile("magazine.txt");
+				bookRecords.displayAvailableMagazine();
+				cout<< "Press Enter To Continue...";
+				cin.get();
+				break;
+			case 16: 
+				system("cls");
+				bookRecords.loadBooksFromFile("magazine.txt");
+				bookRecords.displayBorrowedMagazine();
+				cout<< "Press Enter To Continue...";
+				cin.get();
+				break;
 			default:
 				cout<< "Invalid Choice...";
 		}
 	}while(choice!=17);
 }
-
-void customerMenu(Customer& customer){
-	int choice;
-	do
-	{
-		system("cls");
-		cout << "  ____________\n";
-	    cout << "  |  _       |\n";
-	    cout << "  | | |      |\n";
-	    cout << "  | | |___   |\n";
-	    cout << "  | |_____|  |\n";
-	    cout << "  |__________|\n\n";
-	    cout << "     JR Library\n";
-	    cout << "JR Library Management System\n";
-	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
-	    cout << "                                                                        User Dashboard\n\n";
-	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
-	    cout << "                              |------------------------------------------------------------------------------------------------------------|" << endl;
-	    cout << "                              |                                               MENU                                                         |" << endl;
-	    cout << "                              |------------------------------------------------------------------------------------------------------------|" << endl;
-	    cout << "                              |                                        1.  Borrow Book                                                     |" << endl;
-	    cout << "                              |                                        2.  Return Book                                                     |" << endl;
-	    cout << "                              |                                        3.  View Borrewed Book                                              |" << endl;
-	    cout << "                              |                                        4.  User Information                                                |" << endl;
-	    cout << "                              |                                        5.  Exit                                                            |" << endl;
-	    cout << "                              |------------------------------------------------------------------------------------------------------------|" << endl;
-		cout<< "Enter Your Choice: ";
-		cin>>choice;
-		cin.ignore();
-	
-		switch(choice)
-		{
-			case 1:
-				system("cls");
-				customer.borrowBook(); 
-				cout<<"Press Enter To Continue...";
-				cin.get();
-				break;
-			/*case 2:
-				system("cls");
-				customer.returnBook(); 
-				cout<<"Press Enter To Continue...";
-				cin.get();
-				break;
-			case 3:
-				system("cls");
-				customer.viewBorrowed(); 
-				cout<<"Press Enter To Continue...";
-				cin.get();
-				break;
-			case 4:
-				system("cls");
-				customer.display(); 
-				cout<<"Press Enter To Continue...";
-				cin.get();
-				break;*/
-			default:
-				cout<< "Invalid Choice...";
-		}
-	}while(choice!=5);
-	
-}
-
-void loadSampleBooks(Library&);
-void mainMenu();
+void customerMenu(Customer&);
 
 // =============== Main Function ===================
 
@@ -1202,7 +1608,7 @@ int main() {
 			    cout<< "\n____________________________________________________________________________________________________________________________________________________________\n\n\n";
 		        
 		        cout<<"\n                                                    |======================================================|";
-                cout<<"\n                                                    |            	JR Library Management System            |";
+                cout<<"\n                                                    |              JR Library Management System            |";
                 cout<<"\n                                                    |======================================================|";
                 cout<<"\n                                                    |1.User                                                |";
                 cout<<"\n                                                    |                                                      |";
@@ -1217,9 +1623,6 @@ int main() {
 		        
 		        //user
 		        if(loginType==1){
-
-					customerMenu(customer);
-		        	
 				}
 				//admin
 				else if(loginType==2){
@@ -1231,7 +1634,14 @@ int main() {
 					
 					
 				}
+				break;
+			case 3:
+				//reset
+			case 4:
+				cout<< "Thanks For Use JR Library Management System...";
+				exit(0); 
+				break;
 		}
 	}
     return 0;
-} 
+}
