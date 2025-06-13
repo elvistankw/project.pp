@@ -1344,6 +1344,85 @@ public:
     Customer(string id, string name, string password, string email, string phone_num)
         : Person(id, name, password, email, phone_num) {}
     
+
+	void registerCustomer() 
+	{
+        string id, name, password, confirm_password, email, phone_num, keyword;
+        loadCustomersFromFile();
+        cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                     Register Account\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    id= generateUniqueID();
+        do 
+		{
+            cout << "Enter name: ";
+            getline(cin, name);
+        } while (name.empty());
+
+        do 
+		{
+            cout << "Enter password: ";
+            getline(cin, password);
+            cout << "Confirm password: ";
+            getline(cin, confirm_password);
+        } while (password != confirm_password || password.empty());
+
+        do 
+		{
+            cout << "Enter email: ";
+        getline(cin, email);
+        if (email.empty()) cout << "Email cannot be empty.\n";
+        else if (isDuplicateEmail(email)) {
+            cout << "Email already exists. Please use another.\n";
+            email = "";
+        }
+        } while (email.empty());
+
+        do 
+		{
+            cout << "Enter phone number: ";
+            getline(cin, phone_num);
+        } while (phone_num.empty());
+
+        do 
+		{
+            cout << "Enter keyword (used for resetting password): ";
+            getline(cin, keyword);
+        } while (keyword.empty());
+
+        if (isDuplicateEmail(email)) 
+		{
+            cout << "Email already exists. Registration failed.\n";
+            return;
+        }
+
+        Customer* newCust = new Customer(id, name, password, email, phone_num, keyword);
+        CustomerNode* newNode = new CustomerNode(newCust);
+
+        if (!head) 
+		{
+			head = newNode;
+		}
+        else 
+		{
+            CustomerNode* temp = head;
+            while (temp->next) temp = temp->next;
+            temp->next = newNode;
+        }
+
+		saveCustomersToFile();
+        cout << "Customer registered successfully!\n";
+        cin.get();
+    }
+		
     void searchBook();
     void borrowBook();
     void returnBook();
@@ -1584,6 +1663,8 @@ int main() {
         switch(choice){
         	case 1:
         		//signup
+				system("cls");
+        		customer.registerCustomer();
         	case 2:
         		system("cls");
 				cout << "  ____________\n";
