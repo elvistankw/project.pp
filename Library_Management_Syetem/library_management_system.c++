@@ -1339,10 +1339,6 @@ public:
 
 class Customer : public Person {
 public:
-    Customer() { head = nullptr; }
-
-    Customer(string id, string name, string password, string email, string phone_num)
-        : Person(id, name, password, email, phone_num) {}
     
     void searchBook();
     void borrowBook();
