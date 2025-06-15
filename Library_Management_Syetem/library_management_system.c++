@@ -2013,8 +2013,262 @@ private:
 public:
     Customer() { head = nullptr; }
 
-    Customer(string id, string name, string password, string email, string phone_num)
-        : Person(id, name, password, email, phone_num) {}
+    Customer(string id, string name, string password, string email, string phone_num, string keyword)
+        : Person(id, name, password, email, phone_num), keyword(keyword) {}
+    
+    string generateUniqueID() {
+	    string id;
+	    srand(time(0)); 
+	    do {
+	        id = to_string(rand() % 9000 + 1000); 
+	    } while (isDuplicateCustomerID(id));
+	    return id;
+	}
+
+	bool isDuplicateCustomerID(string id) 
+	{
+	    CustomerNode* temp = head;
+	    while (temp != nullptr) {
+	        if (temp->customer->getID() == id) return true;
+	        temp = temp->next;
+	    }
+	    return false;
+	}
+
+	bool isDuplicateEmail(string email) {
+	    CustomerNode* temp = head;
+	    while (temp != nullptr) {
+	        if (temp->customer->getEmail() == email) return true;
+	        temp = temp->next;
+	    }
+	    return false;
+	}
+    
+    void registerCustomer() 
+	{
+        string id, name, password, confirm_password, email, phone_num, keyword;
+        loadCustomersFromFile();
+        cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                     Register Account\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    id= generateUniqueID();
+        do 
+		{
+            cout << "Enter name: ";
+            getline(cin, name);
+        } while (name.empty());
+
+        do 
+		{
+            cout << "Enter password: ";
+            getline(cin, password);
+            cout << "Confirm password: ";
+            getline(cin, confirm_password);
+        } while (password != confirm_password || password.empty());
+
+        do 
+		{
+            cout << "Enter email: ";
+        getline(cin, email);
+        if (email.empty()) cout << "Email cannot be empty.\n";
+        else if (isDuplicateEmail(email)) {
+            cout << "Email already exists. Please use another.\n";
+            email = "";
+        }
+        } while (email.empty());
+
+        do 
+		{
+            cout << "Enter phone number: ";
+            getline(cin, phone_num);
+        } while (phone_num.empty());
+
+        do 
+		{
+            cout << "Enter keyword (used for resetting password): ";
+            getline(cin, keyword);
+        } while (keyword.empty());
+
+        if (isDuplicateEmail(email)) 
+		{
+            cout << "Email already exists. Registration failed.\n";
+            return;
+        }
+
+        Customer* newCust = new Customer(id, name, password, email, phone_num, keyword);
+        CustomerNode* newNode = new CustomerNode(newCust);
+
+        if (!head) 
+		{
+			head = newNode;
+		}
+        else 
+		{
+            CustomerNode* temp = head;
+            while (temp->next) temp = temp->next;
+            temp->next = newNode;
+        }
+
+		saveCustomersToFile();
+        cout << "Customer registered successfully!\n";
+        cin.get();
+    }
+
+    bool customerLogin() {
+    	system("cls");
+    	cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                     Login Account\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+        string email, password;
+        cout << "Enter email: ";
+        getline(cin, email);
+        cout << "Enter password: ";
+        getline(cin, password);
+
+        CustomerNode* temp = head;
+        while (temp) {
+            if (temp->customer->getEmail() == email && temp->customer->getPassword() == password) {
+                cout << "Login successful! Welcome, " << temp->customer->getName() << ".\n";
+                cin.get();
+                return true;
+            }
+            temp = temp->next;
+        }
+        cout << "Invalid email or password.\n";
+        cin.get();
+        return false;
+    }
+
+    void resetPassword() {
+    	system("cls");
+    	loadCustomersFromFile();
+    	cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                                     Reset Password\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+        string email, inputKeyword, newPassword;
+        cout << "Enter your registered email: ";
+        getline(cin, email);
+
+        CustomerNode* temp = head;
+        while (temp) {
+            if (temp->customer->getEmail() == email) {
+                cout << "Enter your keyword: ";
+                getline(cin, inputKeyword);
+                if (temp->customer->keyword == inputKeyword) {
+                    cout << "Enter new password: ";
+                    getline(cin, newPassword);
+                    temp->customer->setPassword(newPassword);
+                    saveCustomersToFile();
+                    cout << "Password reset successful.\n";
+                    cin.get();
+                    return;
+                } else {
+                    cout << "Keyword incorrect.\n";
+                    cin.get();
+                    return;
+                }
+            }
+            temp = temp->next;
+        }
+
+        cout << "Email not found.\n";
+        cin.get();
+    }
+
+    bool isDuplicateCustomerEmail(string email) {
+        CustomerNode* temp = head;
+        while (temp) {
+            if (temp->customer->getEmail() == email)
+            {
+            	return true;
+			}
+                
+            temp = temp->next;
+        }
+        return false;
+    }
+    
+    void saveCustomersToFile() {
+        ofstream outFile("customer.txt");
+        CustomerNode* temp = head;
+        while (temp) {
+            outFile << temp->customer->getID() << ","
+                    << temp->customer->getName() << ","
+                    << temp->customer->getPassword() << ","
+                    << temp->customer->getEmail() << ","
+                    << temp->customer->getPhoneNum() << ","
+                    << temp->customer->keyword << "\n";
+            temp = temp->next;
+        }
+        outFile.close();
+        cout << "Customer data saved to customer.txt\n";
+    }
+
+    void loadCustomersFromFile() {
+        CustomerNode* current = head;
+        while (current) {
+            CustomerNode* toDelete = current;
+            current = current->next;
+            delete toDelete;
+        }
+        head = nullptr;
+
+        ifstream inFile("customer.txt");
+        if (!inFile) {
+            cout << "customer.txt not found. Load failed.\n";
+            return;
+        }
+
+        string line;
+        while (getline(inFile, line)) {
+            stringstream ss(line);
+            string id, name, password, email, phone, keyword;
+            getline(ss, id, ',');
+            getline(ss, name, ',');
+            getline(ss, password, ',');
+            getline(ss, email, ',');
+            getline(ss, phone, ',');
+            getline(ss, keyword);
+
+            Customer* c = new Customer(id, name, password, email, phone, keyword);
+            CustomerNode* newNode = new CustomerNode(c);
+
+            if (!head) head = newNode;
+            else {
+                CustomerNode* temp = head;
+                while (temp->next) temp = temp->next;
+                temp->next = newNode;
+            }
+        }
+
+        inFile.close();
+    }
+    
+    friend void viewCustomers(Customer& custSystem);
     
     void searchBook();
     void borrowBook();
