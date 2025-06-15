@@ -115,26 +115,10 @@ public:
         bool available;
         BookNode* next;
         
-        void setTitle(string& newTitle) 
-		{
-	        title = newTitle;
-	    }
-	
-	    void setAuthor( string& newAuthor) 
-		{
-	        author = newAuthor;
-	    }
-	
-	    void setYear(int newYear) 
-		{
-	        year = newYear;
-	    }
-	    
-	    void setAvailable(bool status) 
-		{
-	    	available=status;
-		}
-		
+        void setTitle(const string& newTitle) { title = newTitle; }
+        void setAuthor(const string& newAuthor) { author = newAuthor; }
+        void setYear(int newYear) { year = newYear; }
+        void setAvailable(bool isAvailable) { available = isAvailable; }
     };
     BookNode* head;
 
@@ -1331,13 +1315,454 @@ public:
         cout << "Email: " << getEmail() << endl;
         cout << "Phone: " << getPhoneNum() << endl;
 	};
-    //friend void viewReport(Admin);
+
+    void sortBooks() {
+        cout << "  ____________\n";
+        cout << "  |  _       |\n";
+        cout << "  | | |      |\n";
+        cout << "  | | |___   |\n";
+        cout << "  | |_____|  |\n";
+        cout << "  |__________|\n\n";
+        cout << "     JR Library\n";
+        cout << "JR Library Management System\n";
+        cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+        cout << "                                                                       Sort Books\n\n";
+        cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+        
+        BookRecord bookRecord;
+        bookRecord.loadBooksFromFile("books.txt");
+        
+        if (bookRecord.head == nullptr || bookRecord.head->next == nullptr) {
+            cout << "No books or only one book in the system. Nothing to sort." << endl;
+            return;
+        }
+        
+        int sortChoice;
+        cout << "Sort books by:\n";
+        cout << "1. Book ID\n";
+        cout << "2. Title\n";
+        cout << "3. Author\n";
+        cout << "4. Publication Year\n";
+        cout << "Enter your choice: ";
+        cin >> sortChoice;
+        cin.ignore();
+        
+        // Implementing Bubble Sort algorithm
+        bool swapped;
+        BookRecord::BookNode* ptr1;
+        BookRecord::BookNode* lptr = nullptr;
+        
+        do {
+            swapped = false;
+            ptr1 = bookRecord.head;
+            
+            while (ptr1->next != lptr) {
+                bool shouldSwap = false;
+                
+                // Determine if swap is needed based on sort criteria
+                switch (sortChoice) {
+                    case 1: // Sort by ID
+                        shouldSwap = ptr1->id > ptr1->next->id;
+                        break;
+                    case 2: // Sort by Title
+                        shouldSwap = ptr1->title > ptr1->next->title;
+                        break;
+                    case 3: // Sort by Author
+                        shouldSwap = ptr1->author > ptr1->next->author;
+                        break;
+                    case 4: // Sort by Year
+                        shouldSwap = ptr1->year > ptr1->next->year;
+                        break;
+                    default:
+                        cout << "Invalid choice. Sorting by ID." << endl;
+                        shouldSwap = ptr1->id > ptr1->next->id;
+                }
+                
+                if (shouldSwap) {
+                    // Swap node data
+                    string tempId = ptr1->id;
+                    string tempTitle = ptr1->title;
+                    string tempAuthor = ptr1->author;
+                    int tempYear = ptr1->year;
+                    bool tempAvailable = ptr1->available;
+                    
+                    ptr1->id = ptr1->next->id;
+                    ptr1->title = ptr1->next->title;
+                    ptr1->author = ptr1->next->author;
+                    ptr1->year = ptr1->next->year;
+                    ptr1->available = ptr1->next->available;
+                    
+                    ptr1->next->id = tempId;
+                    ptr1->next->title = tempTitle;
+                    ptr1->next->author = tempAuthor;
+                    ptr1->next->year = tempYear;
+                    ptr1->next->available = tempAvailable;
+                    
+                    swapped = true;
+                }
+                ptr1 = ptr1->next;
+            }
+            lptr = ptr1;
+        } while (swapped);
+        
+        cout << "\nBooks sorted successfully!\n";
+        
+        // Display the sorted books
+        bookRecord.displayBooks();
+    }
+
+    void searchBook() {
+        cout << "  ____________\n";
+        cout << "  |  _       |\n";
+        cout << "  | | |      |\n";
+        cout << "  | | |___   |\n";
+        cout << "  | |_____|  |\n";
+        cout << "  |__________|\n\n";
+        cout << "     JR Library\n";
+        cout << "JR Library Management System\n";
+        cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+        cout << "                                                                       Search Books\n\n";
+        cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+        
+        BookRecord bookRecord;
+        bookRecord.loadBooksFromFile("books.txt");
+        
+        if (bookRecord.head == nullptr) {
+            cout << "No books in the system." << endl;
+            return;
+        }
+        
+        // Get search criteria from user
+        string searchId;
+        cout << "Enter book ID to search (e.g., B001): ";
+        getline(cin, searchId);
+        
+        // Count total books for array size
+        int bookCount = 0;
+        BookRecord::BookNode* temp = bookRecord.head;
+        while (temp != nullptr) {
+            bookCount++;
+            temp = temp->next;
+        }
+        
+        // Create arrays to store book data for binary search
+        string* bookIds = new string[bookCount];
+        BookRecord::BookNode** bookNodes = new BookRecord::BookNode*[bookCount];
+        
+        // Fill arrays with data from linked list
+        temp = bookRecord.head;
+        for (int i = 0; i < bookCount; i++) {
+            bookIds[i] = temp->id;
+            bookNodes[i] = temp;
+            temp = temp->next;
+        }
+        
+        // Sort arrays by ID using bubble sort (prerequisite for binary search)
+        for (int i = 0; i < bookCount - 1; i++) {
+            for (int j = 0; j < bookCount - i - 1; j++) {
+                if (bookIds[j] > bookIds[j + 1]) {
+                    // Swap IDs
+                    string tempId = bookIds[j];
+                    bookIds[j] = bookIds[j + 1];
+                    bookIds[j + 1] = tempId;
+                    
+                    // Swap node pointers
+                    BookRecord::BookNode* tempNode = bookNodes[j];
+                    bookNodes[j] = bookNodes[j + 1];
+                    bookNodes[j + 1] = tempNode;
+                }
+            }
+        }
+        
+        // Perform binary search
+        int left = 0;
+        int right = bookCount - 1;
+        bool found = false;
+        
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            
+            // Check if book ID is at mid
+            if (bookIds[mid] == searchId) {
+                found = true;
+                
+                // Display the found book
+                cout << "\n------------------------------------------------------------------------------------------------------------------\n";
+                cout << "Book found!\n";
+                cout << "------------------------------------------------------------------------------------------------------------------\n";
+                cout << "ID\t\tTitle\t\t\t\tAuthor\t\t\t\tYear\t\tStatus\n";
+                cout << "------------------------------------------------------------------------------------------------------------------\n";
+                
+                cout << bookNodes[mid]->id << "\t\t"
+                     << bookNodes[mid]->title << "\t\t\t"
+                     << bookNodes[mid]->author << "\t\t\t"
+                     << bookNodes[mid]->year << "\t\t";
+                     
+                if (bookNodes[mid]->available) {
+                    cout << CYAN << "AVAILABLE" << RESET;
+                } else {
+                    cout << RED << "BORROWED" << RESET;
+                }
+                cout << endl;
+                
+                cout << "------------------------------------------------------------------------------------------------------------------\n";
+                break;
+            }
+            
+            // If ID is greater, ignore left half
+            if (bookIds[mid] < searchId) {
+                left = mid + 1;
+            }
+            // If ID is smaller, ignore right half
+            else {
+                right = mid - 1;
+            }
+        }
+        
+        if (!found) {
+            cout << "\nBook with ID '" << searchId << "' not found in the system." << endl;
+        }
+        
+        // Free allocated memory
+        delete[] bookIds;
+        delete[] bookNodes;
+    }
+    
+    void viewCustomers();
+    void searchCustomers();
+    void generateReport();
+
+    void sortMagazines() {
+        cout << "  ____________\n";
+        cout << "  |  _       |\n";
+        cout << "  | | |      |\n";
+        cout << "  | | |___   |\n";
+        cout << "  | |_____|  |\n";
+        cout << "  |__________|\n\n";
+        cout << "     JR Library\n";
+        cout << "JR Library Management System\n";
+        cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+        cout << "                                                                      Sort Magazines\n\n";
+        cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+        
+        BookRecord bookRecord;
+        bookRecord.loadBooksFromFile("magazine.txt");
+        
+        if (bookRecord.head == nullptr || bookRecord.head->next == nullptr) {
+            cout << "No magazines or only one magazine in the system. Nothing to sort." << endl;
+            return;
+        }
+        
+        int sortChoice;
+        cout << "Sort magazines by:\n";
+        cout << "1. Magazine ID\n";
+        cout << "2. Title\n";
+        cout << "3. Author\n";
+        cout << "4. Publication Year\n";
+        cout << "Enter your choice: ";
+        cin >> sortChoice;
+        cin.ignore();
+        
+        // Implementing Bubble Sort algorithm
+        bool swapped;
+        BookRecord::BookNode* ptr1;
+        BookRecord::BookNode* lptr = nullptr;
+        
+        do {
+            swapped = false;
+            ptr1 = bookRecord.head;
+            
+            while (ptr1->next != lptr) {
+                bool shouldSwap = false;
+                
+                // Determine if swap is needed based on sort criteria
+                switch (sortChoice) {
+                    case 1: // Sort by ID
+                        shouldSwap = ptr1->id > ptr1->next->id;
+                        break;
+                    case 2: // Sort by Title
+                        shouldSwap = ptr1->title > ptr1->next->title;
+                        break;
+                    case 3: // Sort by Author
+                        shouldSwap = ptr1->author > ptr1->next->author;
+                        break;
+                    case 4: // Sort by Year
+                        shouldSwap = ptr1->year > ptr1->next->year;
+                        break;
+                    default:
+                        cout << "Invalid choice. Sorting by ID." << endl;
+                        shouldSwap = ptr1->id > ptr1->next->id;
+                }
+                
+                if (shouldSwap) {
+                    // Swap node data
+                    string tempId = ptr1->id;
+                    string tempTitle = ptr1->title;
+                    string tempAuthor = ptr1->author;
+                    int tempYear = ptr1->year;
+                    bool tempAvailable = ptr1->available;
+                    
+                    ptr1->id = ptr1->next->id;
+                    ptr1->title = ptr1->next->title;
+                    ptr1->author = ptr1->next->author;
+                    ptr1->year = ptr1->next->year;
+                    ptr1->available = ptr1->next->available;
+                    
+                    ptr1->next->id = tempId;
+                    ptr1->next->title = tempTitle;
+                    ptr1->next->author = tempAuthor;
+                    ptr1->next->year = tempYear;
+                    ptr1->next->available = tempAvailable;
+                    
+                    swapped = true;
+                }
+                ptr1 = ptr1->next;
+            }
+            lptr = ptr1;
+        } while (swapped);
+        
+        cout << "\nMagazines sorted successfully!\n";
+        
+        // Display the sorted magazines
+        bookRecord.displayMagazine();
+    }
+
+    void searchMagazine() {
+        cout << "  ____________\n";
+        cout << "  |  _       |\n";
+        cout << "  | | |      |\n";
+        cout << "  | | |___   |\n";
+        cout << "  | |_____|  |\n";
+        cout << "  |__________|\n\n";
+        cout << "     JR Library\n";
+        cout << "JR Library Management System\n";
+        cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+        cout << "                                                                    Search Magazines\n\n";
+        cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+        
+        BookRecord bookRecord;
+        bookRecord.loadBooksFromFile("magazine.txt");
+        
+        if (bookRecord.head == nullptr) {
+            cout << "No magazines in the system." << endl;
+            return;
+        }
+        
+        // Get search criteria from user
+        string searchId;
+        cout << "Enter magazine ID to search: ";
+        getline(cin, searchId);
+        
+        // Count total magazines for array size
+        int bookCount = 0;
+        BookRecord::BookNode* temp = bookRecord.head;
+        while (temp != nullptr) {
+            bookCount++;
+            temp = temp->next;
+        }
+        
+        // Create arrays to store magazine data for binary search
+        string* bookIds = new string[bookCount];
+        BookRecord::BookNode** bookNodes = new BookRecord::BookNode*[bookCount];
+        
+        // Fill arrays with data from linked list
+        temp = bookRecord.head;
+        for (int i = 0; i < bookCount; i++) {
+            bookIds[i] = temp->id;
+            bookNodes[i] = temp;
+            temp = temp->next;
+        }
+        
+        // Sort arrays by ID using bubble sort (prerequisite for binary search)
+        for (int i = 0; i < bookCount - 1; i++) {
+            for (int j = 0; j < bookCount - i - 1; j++) {
+                if (bookIds[j] > bookIds[j + 1]) {
+                    // Swap IDs
+                    string tempId = bookIds[j];
+                    bookIds[j] = bookIds[j + 1];
+                    bookIds[j + 1] = tempId;
+                    
+                    // Swap node pointers
+                    BookRecord::BookNode* tempNode = bookNodes[j];
+                    bookNodes[j] = bookNodes[j + 1];
+                    bookNodes[j + 1] = tempNode;
+                }
+            }
+        }
+        
+        // Perform binary search
+        int left = 0;
+        int right = bookCount - 1;
+        bool found = false;
+        
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            
+            // Check if magazine ID is at mid
+            if (bookIds[mid] == searchId) {
+                found = true;
+                
+                // Display the found magazine
+                cout << "\n------------------------------------------------------------------------------------------------------------------\n";
+                cout << "Magazine found!\n";
+                cout << "------------------------------------------------------------------------------------------------------------------\n";
+                cout << "ID\t\tTitle\t\t\t\tAuthor\t\t\t\tYear\t\tStatus\n";
+                cout << "------------------------------------------------------------------------------------------------------------------\n";
+                
+                cout << bookNodes[mid]->id << "\t\t"
+                     << bookNodes[mid]->title << "\t\t\t"
+                     << bookNodes[mid]->author << "\t\t\t"
+                     << bookNodes[mid]->year << "\t\t";
+                     
+                if (bookNodes[mid]->available) {
+                    cout << CYAN << "AVAILABLE" << RESET;
+                } else {
+                    cout << RED << "BORROWED" << RESET;
+                }
+                cout << endl;
+                
+                cout << "------------------------------------------------------------------------------------------------------------------\n";
+                break;
+            }
+            
+            // If ID is greater, ignore left half
+            if (bookIds[mid] < searchId) {
+                left = mid + 1;
+            }
+            // If ID is smaller, ignore right half
+            else {
+                right = mid - 1;
+            }
+        }
+        
+        if (!found) {
+            cout << "\nMagazine with ID '" << searchId << "' not found in the system." << endl;
+        }
+        
+        // Free allocated memory
+        delete[] bookIds;
+        delete[] bookNodes;
+    }
 };
 
 
 
 
 class Customer : public Person {
+private:
+    struct BorrowBook {
+        string uid;
+        string id;
+        string title;
+        string author;
+        int year;
+        string borrowDate;
+        string returnDate;
+        BorrowBook* next;
+    };
+    
+    BorrowBook* head;
+
 public:
     Customer() { head = nullptr; }
 
@@ -1404,7 +1829,7 @@ void adminMenu(Admin& admin)
 	    cout << "                              |                                        1.  Add Admin                                                       |" << endl;
 	    cout << "                              |                                        2.  Edit Admin                                                      |" << endl;
 	    cout << "                              |                                        3.  Delete Admin                                                    |" << endl;
-	    cout << "                              |                                        4.  Diaplay Admin                                                   |" << endl;
+	    cout << "                              |                                        4.  Display Admin                                                   |" << endl;
 	    cout << "                              |                                        5.  Add New Books                                                   |" << endl;
 	    cout << "                              |                                        6.  Edit Books                                                      |" << endl;
 	    cout << "                              |                                        7.  Delete Books                                                    |" << endl;
@@ -1417,7 +1842,11 @@ void adminMenu(Admin& admin)
 	    cout << "                              |                                        14. View All Magazine                                               |" << endl;
 	    cout << "                              |                                        15. View Available Magazine                                         |" << endl;
 	    cout << "                              |                                        16. View Borrowed Magazine                                          |" << endl;
-	    cout << "                              |                                        17. Exit                                                            |" << endl;
+	    cout << "                              |                                        17. Sort Books                                                      |" << endl;
+	    cout << "                              |                                        18. Search Book                                                     |" << endl;
+	    cout << "                              |                                        19. Sort Magazines                                                  |" << endl;
+	    cout << "                              |                                        20. Search Magazine                                                 |" << endl;
+	    cout << "                              |                                        21. Exit                                                            |" << endl;
 	    cout << "                              |------------------------------------------------------------------------------------------------------------|" << endl;
 		cout<< "Enter Your Choice: ";
 		cin>>choice;
@@ -1538,10 +1967,36 @@ void adminMenu(Admin& admin)
 				cout<< "Press Enter To Continue...";
 				cin.get();
 				break;
+			case 17:
+				system("cls");
+				bookRecords.loadBooksFromFile("books.txt");
+				admin.sortBooks();
+				cout<< "Press Enter To Continue...";
+				cin.get();
+				break;
+			case 18:
+				system("cls");
+				admin.searchBook();
+				cout<< "Press Enter To Continue...";
+				cin.get();
+				break;
+			case 19:
+				system("cls");
+				bookRecords.loadBooksFromFile("magazine.txt");
+				admin.sortMagazines();
+				cout<< "Press Enter To Continue...";
+				cin.get();
+				break;
+			case 20:
+				system("cls");
+				admin.searchMagazine();
+				cout<< "Press Enter To Continue...";
+				cin.get();
+				break;
 			default:
 				cout<< "Invalid Choice...";
 		}
-	}while(choice!=17);
+	}while(choice!=21);
 }
 void customerMenu(Customer&);
 
