@@ -2419,14 +2419,27 @@ private:
         int year;
         string borrowDate;
         string returnDate;
+        bool available;
         BorrowBook* next;
     };
     
-    BorrowBook* head;
+    struct BorrowMagazine {
+        string uid;
+        string id;
+        string title;
+        string author;
+        int year;
+        string borrowDate;
+        string returnDate;
+        bool available;
+        BorrowMagazine* next;
+    };
 
+	BorrowBook* head1;
+    BorrowMagazine* head2;
     
 public:
-    Customer() { head = nullptr; }
+    Customer() : currentUser(nullptr), head(nullptr), head1(nullptr) {}
 
     Customer(string id, string name, string password, string email, string phone_num, string keyword)
         : Person(id, name, password, email, phone_num), keyword(keyword) {}
