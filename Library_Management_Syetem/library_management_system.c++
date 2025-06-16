@@ -3,6 +3,38 @@
 #include <iomanip>
 #include <fstream>
 #include <sstream>
+
+/*
+ * =================================================================================
+ * JR LIBRARY MANAGEMENT SYSTEM
+ * =================================================================================
+ * 
+ * ABOUT
+ * This library management system is designed to handle books and magazine
+ * management for educational institutions. It includes custom implementations
+ * of data structures and algorithms to demonstrate C++ programming concepts.
+ * 
+ * FEATURES
+ * - User and admin management
+ * - Book and magazine cataloging
+ * - Borrowing and returning functionality
+ * - Custom implementations of:
+ *   - Bubble Sort algorithm
+ *   - Binary Search algorithm
+ *   - Linked list data structures
+ * 
+ * LEARNING GOALS
+ * - Demonstrate understanding of core data structures
+ * - Implement algorithms without built-in functions
+ * - Gain practical experience in real-world applications
+ * 
+ * PROJECT CREATED BY: JR Library Development Team
+ * VERSION: 1.0.0
+ * CONTACT: support@jrlibrary.example.com
+ * 
+ * =================================================================================
+ */
+
 #define CYAN "\033[32m" //green color
 #define RED "\033[31m"//red color
 #define RESET "\033[0m"//reset color
@@ -27,7 +59,6 @@ struct ReviewNode {
 };
 
 
-
 // ================= Base Classes =================
 
 class Person {
@@ -40,7 +71,14 @@ private:
 public:
     Person() : id(""), name(""), password(""), email(""), phone_num("") {}
     
-    Person(string& id, string& name, string& password, string& email, string& phone_num) : id(id), name(name), password(password), email(email), phone_num(phone_num) {}
+    Person(string id, string n, string p, string e, string pn)
+	{
+    	this->id=id;
+    	name=n;
+    	password=p;
+    	email=e;
+    	phone_num=pn;
+	};
 	
     string getID() {
     	return id;
@@ -501,6 +539,8 @@ public:
 	
 	Admin(string id, string name, string password, string email = "", string phone_num = "") : Person(id, name, password, email, phone_num) {}
 	
+
+	
 	bool adminLogin() {
 		system("cls");
 	    string inputEmail, inputPassword;
@@ -536,6 +576,7 @@ public:
 	    cin.ignore();
 	    cin.get();
 	    return false;
+
 	}
 
     
@@ -656,10 +697,12 @@ public:
 				temp->next = newNode;
     	}
     	cout << "Add New Admin Successfully!" << endl;
+
 	}
 	
 	void editAdmin()
 	{
+	    bool success = true;
 		cout << "  ____________\n";
 		cout << "  |  _       |\n";
 		cout << "  | | |      |\n";
@@ -680,7 +723,7 @@ public:
 	    getline(cin,editID);  
 	
 	    AdminNode* temp = head;
-	    while (temp != NULL) 
+	    while (temp != nullptr) 
 		{  
 	
 		    if (temp->admin->getID() == editID) 
@@ -701,7 +744,12 @@ public:
 	                cout << "4. Phone Number" << endl;
 	                cout << "5. Exit Edit" << endl;
 	                cout << "Enter your choice: ";
-	                cin >> choice;
+	                if (!(cin >> choice)) {
+	                    cin.clear();
+	                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	                    cout << "Invalid input. Please enter a number." << endl;
+	                    continue;
+	                }
 	                cin.ignore();
 	
 	                switch (choice) {
@@ -781,7 +829,12 @@ public:
 	        temp = temp->next;
 	    }
 
-    cout << "Admin ID not found." << endl;
+        cout << "Admin ID not found." << endl;
+	    
+	    if (!success) {
+	        cerr << "Error occurred during admin editing" << endl;
+	        cout << "Failed to edit admin. Please try again." << endl;
+	    }
 	}
 	
 	void removeAdmin() {
@@ -1949,16 +2002,6 @@ public:
 
 
 class Customer : public Person {
-private: 
-	string keyword;  // for password reset
-
-    struct CustomerNode {
-        Customer* customer;
-        CustomerNode* next;
-        CustomerNode(Customer* c) : customer(c), next(nullptr) {}
-    };
-
-    CustomerNode* head;
     
 public:
     Customer() { head = nullptr; }
@@ -2242,7 +2285,6 @@ public:
     friend void searchHelper(Library&, string);  // Friend function
 };
 
-
 // =============== Function Prototypes =============
 
 void loginMenu();
@@ -2250,6 +2292,7 @@ void adminMenu(Admin* admin)
 {
 	BookRecord bookRecords;
 	Customer customer;
+	Library library;  // Create a Library instance to use the sorting and searching functions
 	int choice;
 	
 	customer.loadCustomersFromFile();
@@ -2299,7 +2342,9 @@ void adminMenu(Admin* admin)
 	    cout << "                              |                                        23. Search Books                                                    |" << endl;
 	    cout << "                              |                                        24. Sort Magazine                                                   |" << endl;
 	    cout << "                              |                                        25. Search Magazine                                                 |" << endl;
-	    cout << "                              |                                        26. Logout                                                          |" << endl;
+	    cout << "                              |                                        26. Bubble Sort Magazines (No Save)                 |" << endl;
+	    cout << "                              |                                        27. Binary Search Magazines (No Save)               |" << endl;
+	    cout << "                              |                                        28. Logout                                          |" << endl;
 	    cout << "                              |------------------------------------------------------------------------------------------------------------|" << endl;
 		cout<< "Enter Your Choice: ";
 		cin>>choice;
@@ -2422,29 +2467,66 @@ void adminMenu(Admin* admin)
 				break;
 			case 17:
 				system("cls");
-				viewCustomers(customer);
+				bookRecords.loadBooksFromFile("books.txt");
+				admin.sortBooks();
+				cout<< "Press Enter To Continue...";
+				cin.get();
 				break;
 			case 18:
 				system("cls");
-				admin->viewBorrowedBooks();
+				admin.searchBook();
+				cout<< "Press Enter To Continue...";
+				cin.get();
 				break;
 			case 19:
 				system("cls");
-				admin->viewBorrowedHistory();
+				bookRecords.loadBooksFromFile("magazine.txt");
+				admin.sortMagazines();
+				cout<< "Press Enter To Continue...";
+				cin.get();
 				break;
 			case 20:
 				system("cls");
-				admin->viewBorrowedMagazine();
-				break;
-			case 21:
-				system("cls");
-				admin->viewBorrowedMagazineHistory(); 
+				admin.searchMagazine();
+				cout<< "Press Enter To Continue...";
 				cin.get();
 				break;
+			case 17:
+				system("cls");
+				admin->viewBorrowedMagazineHistory();
+				break;
+			case 24:
+				system("cls");
+				library.sortMagazinesByTitle();
+				cout << "Press Enter to continue...";
+				cin.get();
+				break;
+			case 25:
+				system("cls");
+				library.searchMagazineById();
+				cout << "Press Enter to continue...";
+				cin.get();
+				break;
+			case 26:
+				system("cls");
+				library.bubbleSortMagazines();
+				cout << "Press Enter to continue...";
+				cin.get();
+				break;
+			case 27:
+				system("cls");
+				library.binarySearchMagazine();
+				cout << "Press Enter to continue...";
+				cin.get();
+				break;
+			case 28:
+				cout << "Logging out. Goodbye!\n";
+				return;
 			default:
 				cout<< "Invalid Choice...";
 				cin.get();
 		}
+	}while(choice!=21);
 	}while(choice!=24);
 }
 void customerMenu(Customer&);
@@ -2589,3 +2671,4 @@ int main() {
 	}
     return 0;
 }
+
