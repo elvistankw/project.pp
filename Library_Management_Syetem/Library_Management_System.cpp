@@ -3965,8 +3965,8 @@ public:
         }
         
         // Create arrays for sorting and searching
-        string arr[50];  // Book IDs
-        BookNode* nodes[50];  // Corresponding book nodes
+        string arr[100];  // Book IDs
+        BookNode* nodes[100];  // Corresponding book nodes
         int i, j;
         // Fill arrays with book data
         temp = head;
@@ -4040,8 +4040,8 @@ public:
             return;
         }
         // Create arrays for sorting and searching
-        string arr[50];  // Book titles
-        BookNode* nodes[50];  // Corresponding book nodes
+        string arr[100];  // Book titles
+        BookNode* nodes[100];  // Corresponding book nodes
         int i, j;
         
         // Fill arrays with book data
@@ -4115,8 +4115,8 @@ public:
             return;
         }
         //Create arrays for sorting and searching
-        string arr[50];  // Book authors
-        BookNode* nodes[50];  // Corresponding book nodes
+        string arr[100];  // Book authors
+        BookNode* nodes[100];  // Corresponding book nodes
         int i, j;
         // Fill arrays with book data
         temp = head;
@@ -4190,8 +4190,8 @@ public:
             return;
         } 
         // Create arrays for sorting and searching
-        int arr[50];  // Book years
-        BookNode* nodes[50];  // Corresponding book nodes
+        int arr[100];  // Book years
+        BookNode* nodes[100];  // Corresponding book nodes
         int i, j;
         // Fill arrays with book data
         temp = head;
@@ -4355,8 +4355,8 @@ public:
             return;
         }
         // Create arrays for sorting and searching
-        string arr[50];  // Magazine IDs
-        BookNode* nodes[50];  // Corresponding magazine nodes
+        string arr[100];  // Magazine IDs
+        BookNode* nodes[100];  // Corresponding magazine nodes
         int i, j;
         // Fill arrays with magazine data
         temp = head;
@@ -4429,8 +4429,8 @@ public:
             return;
         }
         // Create arrays for sorting and searching
-        string arr[50];  // Magazine titles
-        BookNode* nodes[50];  // Corresponding magazine nodes
+        string arr[100];  // Magazine titles
+        BookNode* nodes[100];  // Corresponding magazine nodes
         int i, j;
         // Fill arrays with magazine data
         temp = head;
@@ -4502,8 +4502,8 @@ public:
             return;
         }
         // Create arrays for sorting and searching
-        string arr[50];  // Magazine authors
-        BookNode* nodes[50];  // Corresponding magazine nodes
+        string arr[100];  // Magazine authors
+        BookNode* nodes[100];  // Corresponding magazine nodes
         int i, j;
         // Fill arrays with magazine data
         temp = head;
@@ -4575,8 +4575,8 @@ void searchMagazineByYear(int searchYear) {
         return;
     }
     // Create arrays for sorting and searching
-    int arr[50];  // Magazine years
-    BookNode* nodes[50];  // Corresponding magazine nodes
+    int arr[100];  // Magazine years
+    BookNode* nodes[100];  // Corresponding magazine nodes
     int i, j;
     // Fill arrays with magazine data
     temp = head;
