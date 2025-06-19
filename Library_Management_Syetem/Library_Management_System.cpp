@@ -501,6 +501,8 @@ public:
         // Base implementation returns nullptr
         return nullptr;
     } 
+    // In the BookRecord class declaration (around line 70)
+    friend void searchHelper(BookRecord& records, const string& query, bool searchTitle, bool searchAuthor, bool searchId);
 };
 
 // ================ Derived Classes =================
@@ -1605,8 +1607,8 @@ public:
 			        cout << left
 			             << setw(12) << current->userId
 			             << setw(12) << current->bookId
-			             << setw(30) << current->title
-			             << setw(20) << current->author
+			             << setw(30) << current->title.substr(0, 28)
+			             << setw(20) << current->author.substr(0, 18)
 			             << setw(20) << current->borrowDate
 			             << setw(15) << current->returnDate
 			             << setw(10) << "Yes"
@@ -1982,6 +1984,77 @@ public:
 		cin.ignore(); 
 		cin.get();    
 	}
+
+    // Implementation outside the class
+    void searchHelper(BookRecord& records, const string& query, bool searchTitle, bool searchAuthor, bool searchId) {
+    // Check if database is empty
+    if (records.head == nullptr) {
+        cout << "No records found in the database.\n";
+        return;
+    }
+    // Display search header
+        cout << "  ____________\n";
+	    cout << "  |  _       |\n";
+	    cout << "  | | |      |\n";
+	    cout << "  | | |___   |\n";
+	    cout << "  | |_____|  |\n";
+	    cout << "  |__________|\n\n";
+	    cout << "     JR Library\n";
+	    cout << "JR Library Management System\n";
+	    cout << "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+	    cout << "                                                               Search Results\n\n";
+	    cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------\n\n";
+        cout << string(80, '=') << "\n";
+        cout << left << setw(8) << "ID" 
+         << setw(25) << "Title" 
+         << setw(20) << "Author" 
+         << setw(8) << "Year" 
+         << setw(12) << "Status" << "\n";
+    cout << string(80, '-') << "\n";
+    // Initialize variables
+    bool found = false;
+    BookRecord::BookNode* current = records.head;
+    // Traverse the linked list
+    while (current != nullptr) {
+        bool isMatch = false;
+        // Check matching criteria
+        if (searchId && current->id.find(query) != string::npos) {
+            isMatch = true;
+        }
+        if (searchTitle && current->title.find(query) != string::npos) {
+            isMatch = true;
+        }
+        if (searchAuthor && current->author.find(query) != string::npos) {
+            isMatch = true;
+        }
+        // Display matching record
+        if (isMatch) {
+            string displayTitle = current->title.length() > 22 ? 
+                                current->title.substr(0, 22) + "..." : current->title;
+            string displayAuthor = current->author.length() > 17 ? 
+                                 current->author.substr(0, 17) + "..." : current->author;
+            string status = current->available ? "Available" : "Borrowed";
+            
+            cout << left << setw(8) << current->id
+                 << setw(25) << displayTitle
+                 << setw(20) << displayAuthor
+                 << setw(8) << current->year
+                 << setw(12) << status << "\n";
+            
+            found = true;
+        }
+        // Move to next node
+        current = current->next;
+    }
+    // Display footer
+    cout << string(80, '=') << "\n";
+    if (!found) {
+        cout << "No matching records found for your search criteria.\n";
+    } else {
+        cout << "Search completed successfully.\n";
+    }
+    cout << "\n";
+    }
 };
 
 
@@ -2977,7 +3050,7 @@ public:
 	               << magazineYear << ","
 	               << borrowDate << ","
 	               << returnDate << ","
-	               << "0,\n";  // 0 = δ�黹
+	               << "0,\n"; 
 	    borrowFile.close();
 	
 	    while (magazineHead) {
