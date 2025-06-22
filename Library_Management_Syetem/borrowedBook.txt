@@ -1,3 +1,11 @@
-6743,B030,Velvet Nights,F. Grant,1985,2025-06-18,2025-06-18,1,
-6743,B030,Velvet Nights,F. Grant,1985,2025-06-18,2025-06-18,1,
-6743,B030,Velvet Nights,F. Grant,1985,2025-06-18,2025-06-18,1,
+6521,B011,Celestial Dance,Dylan Thomas,2002,2025-06-19,2025-06-19,1
+4913,B011,Celestial Dance,Dylan Thomas,2002,2025-06-19,2025-06-19,1
+6521,B011,Celestial Dance,Dylan Thomas,2002,2025-06-19,2025-06-19,1
+6521,B015,Broken Mirrors,Lang Hughes,1994,2025-06-19,2025-06-19,1
+6521,B015,Broken Mirrors,Lang Hughes,1994,2025-06-19,2025-06-19,1
+4913,B011,Celestial Dance,Dylan Thomas,2002,2025-06-19,2025-06-19,1
+4677,B011,Celestial Dance,Dylan Thomas,2002,2025-06-19,2025-06-19,1
+7997,B030,Velvet Nights,F. Grant,1985,2025-06-20,2025-06-20,1
+9594,B030,Velvet Nights,F. Grant,1985,2025-06-20,2025-06-20,1
+9594,B030,Velvet Nights,F. Grant,1985,2025-06-20,2025-06-20,1
+9594,B030,Velvet Nights,F. Grant,1985,2025-06-20,-,0

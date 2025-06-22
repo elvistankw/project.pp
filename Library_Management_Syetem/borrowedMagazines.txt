@@ -1,2 +1,13 @@
-6743,M001,Silent Journey,John Keats,2001,2025-06-18,2025-06-18,1,
-6743,M002,Hidden Truths,Mary Shelley,1998,2025-06-18,-,0,
+6743,M001,Silent Journey,John Keats,2001,2025-06-18,2025-06-18,1
+6743,M002,Hidden Truths,Mary Shelley,1998,2025-06-18,-,0
+4913,M001,Silent Journey,John Keats,2001,2025-06-19,2025-06-19,1
+6521,M001,Silent Journey,John Keats,2001,2025-06-19,2025-06-19,1
+6521,M001,Silent Journey,John Keats,2001,2025-06-19,2025-06-19,1
+6521,M001,Silent Journey,John Keats,2001,2025-06-19,2025-06-19,1
+4913,M001,Silent Journey,John Keats,2001,2025-06-19,2025-06-19,1
+4913,M001,Silent Journey,John Keats,2001,2025-06-19,-,0
+4677,M006,Parallel Lines,Arthur Clarke,2003,2025-06-19,2025-06-19,1
+4677,M006,Parallel Lines,Arthur Clarke,2003,2025-06-19,2025-06-19,1
+7997,M001,Silent Journey,John Keats,2001,2025-06-20,2025-06-20,1
+9594,M001,Silent Journey,John Keats,2001,2025-06-20,-,0
+9594,M030,Velvet Nights,F. Grant,1985,2025-06-21,2025-06-21,1
